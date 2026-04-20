@@ -1,0 +1,6 @@
+{
+  "name": "spearmint",
+  "type": "custom",
+  "version": "0.1.0",
+  "description": "C++23 Semantic Tokenization & Syntax Highlighting Engine (shared)"
+}
