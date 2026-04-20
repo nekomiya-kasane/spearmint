@@ -1,8 +1,8 @@
-#include <gtest/gtest.h>
-
 #include "spearmint/core/style.h"
 #include "spearmint/core/style_registry.h"
 #include "spearmint/styles/builtin.h"
+
+#include <gtest/gtest.h>
 
 using namespace spearmint;
 
@@ -58,7 +58,7 @@ static_assert(monokai_view.background_color == 0x272822);
 // ── Runtime tests ──────────────────────────────────────────────────────
 
 TEST(StyleTest, MonokaiLookup) {
-    const auto* rule = styles::monokai.lookup(token::keyword::self);
+    const auto *rule = styles::monokai.lookup(token::keyword::self);
     ASSERT_NE(rule, nullptr);
     EXPECT_EQ(rule->fg, 0xf92672u);
     EXPECT_TRUE(rule->has_fg);
@@ -66,14 +66,14 @@ TEST(StyleTest, MonokaiLookup) {
 
 TEST(StyleTest, MonokaiInheritance) {
     // keyword::pseudo has no explicit rule → inherits from keyword::self
-    const auto* rule = styles::monokai.lookup(token::keyword::pseudo);
+    const auto *rule = styles::monokai.lookup(token::keyword::pseudo);
     ASSERT_NE(rule, nullptr);
     EXPECT_EQ(rule->fg, 0xf92672u);
 }
 
 TEST(StyleTest, StyleDefViewLookup) {
     style_def_view view(styles::monokai);
-    const auto* rule = view.lookup(token::name::function);
+    const auto *rule = view.lookup(token::name::function);
     ASSERT_NE(rule, nullptr);
     EXPECT_EQ(rule->fg, 0xa6e22eu);
 }
@@ -81,13 +81,13 @@ TEST(StyleTest, StyleDefViewLookup) {
 TEST(StyleTest, StyleDefViewInheritance) {
     // dracula has name::variable rule; variable_class inherits from variable
     style_def_view view(styles::dracula);
-    const auto* rule = view.lookup(token::name::variable_class);
+    const auto *rule = view.lookup(token::name::variable_class);
     ASSERT_NE(rule, nullptr);
-    EXPECT_EQ(rule->fg, 0x8be9fdu);  // same as name::variable in dracula
+    EXPECT_EQ(rule->fg, 0x8be9fdu); // same as name::variable in dracula
 }
 
 TEST(StyleTest, RegistryGetStyle) {
-    const auto* s = get_style("monokai");
+    const auto *s = get_style("monokai");
     ASSERT_NE(s, nullptr);
     EXPECT_EQ(s->name, "monokai");
     EXPECT_EQ(s->background_color, 0x272822u);
@@ -114,21 +114,23 @@ TEST(StyleTest, RegistryGetStyleNotFound) {
 }
 
 TEST(StyleTest, RegistryRegisterCustom) {
-    static constexpr static_style_def<1> custom = {
-        "custom-test", "Custom Test",
-        0x000000, true,
-        0, false,
-        0, 0,
-        {{
-            {token::keyword::self, style_rule::with_fg(0xFF0000)},
-        }}
-    };
+    static constexpr static_style_def<1> custom = {"custom-test",
+                                                   "Custom Test",
+                                                   0x000000,
+                                                   true,
+                                                   0,
+                                                   false,
+                                                   0,
+                                                   0,
+                                                   {{
+                                                       {token::keyword::self, style_rule::with_fg(0xFF0000)},
+                                                   }}};
 
     register_style(style_def_view(custom));
-    const auto* s = get_style("custom-test");
+    const auto *s = get_style("custom-test");
     ASSERT_NE(s, nullptr);
     EXPECT_EQ(s->name, "custom-test");
-    const auto* rule = s->lookup(token::keyword::self);
+    const auto *rule = s->lookup(token::keyword::self);
     ASSERT_NE(rule, nullptr);
     EXPECT_EQ(rule->fg, 0xFF0000u);
 }
@@ -136,20 +138,20 @@ TEST(StyleTest, RegistryRegisterCustom) {
 TEST(StyleTest, AllBuiltinStylesHaveEntries) {
     auto names = get_all_styles();
     for (auto n : names) {
-        const auto* s = get_style(n);
+        const auto *s = get_style(n);
         ASSERT_NE(s, nullptr) << "Style " << n << " not found";
         EXPECT_GT(s->entries.size(), 0u) << "Style " << n << " has no entries";
     }
 }
 
 TEST(StyleTest, DraculaColors) {
-    const auto* rule = styles::dracula.lookup(token::keyword::self);
+    const auto *rule = styles::dracula.lookup(token::keyword::self);
     ASSERT_NE(rule, nullptr);
     EXPECT_EQ(rule->fg, 0xff79c6u);
 }
 
 TEST(StyleTest, NordColors) {
-    const auto* rule = styles::nord.lookup(token::literal::string::self);
+    const auto *rule = styles::nord.lookup(token::literal::string::self);
     ASSERT_NE(rule, nullptr);
     EXPECT_EQ(rule->fg, 0xa3be8cu);
 }

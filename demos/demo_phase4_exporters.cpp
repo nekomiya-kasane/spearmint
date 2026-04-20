@@ -3,24 +3,24 @@
  * @brief Phase 4 demo: tokenize Python and export to HTML, ANSI, SVG, LaTeX.
  */
 
+#include "spearmint/core/lexer_registry.h"
+#include "spearmint/core/style.h"
+#include "spearmint/core/style_registry.h"
+#include "spearmint/core/token.h"
+#include "spearmint/core/token_stream.h"
+#include "spearmint/exporters/ansi.h"
+#include "spearmint/exporters/html.h"
+#include "spearmint/exporters/latex.h"
+#include "spearmint/exporters/svg.h"
+#include "spearmint/lexers/python.h"
+#include "spearmint/styles/builtin.h"
+
 #include <cstdio>
 #include <string>
 
-#include "spearmint/core/token.h"
-#include "spearmint/core/token_stream.h"
-#include "spearmint/core/style.h"
-#include "spearmint/core/style_registry.h"
-#include "spearmint/core/lexer_registry.h"
-#include "spearmint/lexers/python.h"
-#include "spearmint/styles/builtin.h"
-#include "spearmint/exporters/html.h"
-#include "spearmint/exporters/ansi.h"
-#include "spearmint/exporters/svg.h"
-#include "spearmint/exporters/latex.h"
-
 using namespace spearmint;
 
-static const char* python_source = R"(def fibonacci(n):
+static const char *python_source = R"(def fibonacci(n):
     """Return first n Fibonacci numbers."""
     result = [0, 1]
     while len(result) < n:
@@ -36,7 +36,10 @@ int main() {
     lexers::register_python_lexer();
 
     auto lex = get_lexer_by_name("python");
-    if (!lex) { std::puts("ERROR: no python lexer"); return 1; }
+    if (!lex) {
+        std::puts("ERROR: no python lexer");
+        return 1;
+    }
 
     auto result = lex->tokenize(python_source);
     style_def_view style(styles::monokai);

@@ -14,12 +14,24 @@ std::string html_exporter::escape_html(std::string_view text) {
     out.reserve(text.size());
     for (char c : text) {
         switch (c) {
-            case '&':  out += "&amp;"; break;
-            case '<':  out += "&lt;"; break;
-            case '>':  out += "&gt;"; break;
-            case '"':  out += "&quot;"; break;
-            case '\'': out += "&#39;"; break;
-            default:   out += c; break;
+        case '&':
+            out += "&amp;";
+            break;
+        case '<':
+            out += "&lt;";
+            break;
+        case '>':
+            out += "&gt;";
+            break;
+        case '"':
+            out += "&quot;";
+            break;
+        case '\'':
+            out += "&#39;";
+            break;
+        default:
+            out += c;
+            break;
         }
     }
     return out;
@@ -31,10 +43,7 @@ std::string html_exporter::color_to_css(uint32_t color) {
     return buf;
 }
 
-std::string html_exporter::format(
-    const token_stream& tokens,
-    const style_def_view& style) const
-{
+std::string html_exporter::format(const token_stream &tokens, const style_def_view &style) const {
     std::string out;
     out.reserve(tokens.size() * 40);
 
@@ -55,8 +64,8 @@ std::string html_exporter::format(
     }
     out += "><code>";
 
-    for (const auto& entry : tokens) {
-        const auto* rule = style.lookup(entry.type);
+    for (const auto &entry : tokens) {
+        const auto *rule = style.lookup(entry.type);
 
         bool has_style = rule && (rule->has_fg || rule->bold || rule->italic || rule->underline);
 
@@ -89,4 +98,4 @@ std::string html_exporter::format(
     return out;
 }
 
-}  // namespace spearmint::exporters
+} // namespace spearmint::exporters

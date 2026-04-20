@@ -3,17 +3,17 @@
 namespace spearmint::lexers {
 
 namespace {
-constexpr const char* aliases[] = {"xml", "xsl", "xslt", "svg_xml"};
-constexpr const char* filenames[] = {"*.xml", "*.xsl", "*.xslt", "*.rss", "*.atom", "*.plist", "*.svg"};
-constexpr const char* mimes[] = {"text/xml", "application/xml"};
+constexpr const char *aliases[] = {"xml", "xsl", "xslt", "svg_xml"};
+constexpr const char *filenames[] = {"*.xml", "*.xsl", "*.xslt", "*.rss", "*.atom", "*.plist", "*.svg"};
+constexpr const char *mimes[] = {"text/xml", "application/xml"};
 const lexer_info xml_info = {
-    "xml", "XML",
-    {aliases}, {filenames}, {mimes},
-    "https://www.w3.org/XML/", 10,
+    "xml", "XML", {aliases}, {filenames}, {mimes}, "https://www.w3.org/XML/", 10,
 };
-}
+} // namespace
 
-const lexer_info& xml_lexer::info() const noexcept { return xml_info; }
+const lexer_info &xml_lexer::info() const noexcept {
+    return xml_info;
+}
 
 float xml_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
@@ -63,9 +63,7 @@ state_map xml_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_xml_lexer() {
-    register_lexer([]() -> std::unique_ptr<lexer> {
-        return std::make_unique<xml_lexer>();
-    }, xml_info);
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<xml_lexer>(); }, xml_info);
 }
 
-}
+} // namespace spearmint::lexers

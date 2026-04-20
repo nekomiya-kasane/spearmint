@@ -9,19 +9,19 @@ namespace spearmint::lexers {
 
 namespace {
 
-constexpr const char* aliases[] = {"cpp", "c++", "c", "cxx"};
-constexpr const char* filenames[] = {"*.cpp", "*.cxx", "*.cc", "*.c", "*.h", "*.hpp", "*.hxx", "*.hh", "*.ipp"};
-constexpr const char* mimes[] = {"text/x-c++src", "text/x-csrc", "text/x-c++hdr", "text/x-chdr"};
+constexpr const char *aliases[] = {"cpp", "c++", "c", "cxx"};
+constexpr const char *filenames[] = {"*.cpp", "*.cxx", "*.cc", "*.c", "*.h", "*.hpp", "*.hxx", "*.hh", "*.ipp"};
+constexpr const char *mimes[] = {"text/x-c++src", "text/x-csrc", "text/x-c++hdr", "text/x-chdr"};
 
 const lexer_info cpp_info = {
-    "cpp", "C++",
-    {aliases}, {filenames}, {mimes},
-    "https://isocpp.org", 10,
+    "cpp", "C++", {aliases}, {filenames}, {mimes}, "https://isocpp.org", 10,
 };
 
-}  // namespace
+} // namespace
 
-const lexer_info& cpp_lexer::info() const noexcept { return cpp_info; }
+const lexer_info &cpp_lexer::info() const noexcept {
+    return cpp_info;
+}
 
 float cpp_lexer::analyse_text(std::string_view source) const noexcept {
     float score = 0.0f;
@@ -131,10 +131,7 @@ state_map cpp_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_cpp_lexer() {
-    register_lexer(
-        []() -> std::unique_ptr<lexer> { return std::make_unique<cpp_lexer>(); },
-        cpp_info
-    );
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<cpp_lexer>(); }, cpp_info);
 }
 
-}  // namespace spearmint::lexers
+} // namespace spearmint::lexers

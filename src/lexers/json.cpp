@@ -9,19 +9,19 @@ namespace spearmint::lexers {
 
 namespace {
 
-constexpr const char* aliases[] = {"json"};
-constexpr const char* filenames[] = {"*.json", "*.jsonl", "*.geojson"};
-constexpr const char* mimes[] = {"application/json", "application/ld+json"};
+constexpr const char *aliases[] = {"json"};
+constexpr const char *filenames[] = {"*.json", "*.jsonl", "*.geojson"};
+constexpr const char *mimes[] = {"application/json", "application/ld+json"};
 
 const lexer_info json_info = {
-    "json", "JSON",
-    {aliases}, {filenames}, {mimes},
-    "https://json.org", 10,
+    "json", "JSON", {aliases}, {filenames}, {mimes}, "https://json.org", 10,
 };
 
-}  // namespace
+} // namespace
 
-const lexer_info& json_lexer::info() const noexcept { return json_info; }
+const lexer_info &json_lexer::info() const noexcept {
+    return json_info;
+}
 
 state_map json_lexer::get_rules() const {
     namespace tk = token;
@@ -58,10 +58,7 @@ state_map json_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_json_lexer() {
-    register_lexer(
-        []() -> std::unique_ptr<lexer> { return std::make_unique<json_lexer>(); },
-        json_info
-    );
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<json_lexer>(); }, json_info);
 }
 
-}  // namespace spearmint::lexers
+} // namespace spearmint::lexers

@@ -19,19 +19,19 @@ namespace spearmint::lexers {
 
 namespace {
 
-constexpr const char* aliases[] = {"ftl", "fluent"};
-constexpr const char* filenames[] = {"*.ftl"};
-constexpr const char* mimes[] = {"text/x-fluent"};
+constexpr const char *aliases[] = {"ftl", "fluent"};
+constexpr const char *filenames[] = {"*.ftl"};
+constexpr const char *mimes[] = {"text/x-fluent"};
 
 const lexer_info ftl_info = {
-    "ftl", "Fluent (FTL)",
-    {aliases}, {filenames}, {mimes},
-    "https://projectfluent.org", 10,
+    "ftl", "Fluent (FTL)", {aliases}, {filenames}, {mimes}, "https://projectfluent.org", 10,
 };
 
-}  // namespace
+} // namespace
 
-const lexer_info& ftl_lexer::info() const noexcept { return ftl_info; }
+const lexer_info &ftl_lexer::info() const noexcept {
+    return ftl_info;
+}
 
 float ftl_lexer::analyse_text(std::string_view source) const noexcept {
     float score = 0.0f;
@@ -191,10 +191,7 @@ state_map ftl_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_ftl_lexer() {
-    register_lexer(
-        []() -> std::unique_ptr<lexer> { return std::make_unique<ftl_lexer>(); },
-        ftl_info
-    );
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<ftl_lexer>(); }, ftl_info);
 }
 
-}  // namespace spearmint::lexers
+} // namespace spearmint::lexers

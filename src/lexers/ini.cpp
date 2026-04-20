@@ -3,17 +3,17 @@
 namespace spearmint::lexers {
 
 namespace {
-constexpr const char* aliases[] = {"ini", "cfg", "dosini"};
-constexpr const char* filenames[] = {"*.ini", "*.cfg", "*.conf", ".editorconfig", ".gitconfig"};
-constexpr const char* mimes[] = {"text/x-ini"};
+constexpr const char *aliases[] = {"ini", "cfg", "dosini"};
+constexpr const char *filenames[] = {"*.ini", "*.cfg", "*.conf", ".editorconfig", ".gitconfig"};
+constexpr const char *mimes[] = {"text/x-ini"};
 const lexer_info ini_info = {
-    "ini", "INI",
-    {aliases}, {filenames}, {mimes},
-    "", 10,
+    "ini", "INI", {aliases}, {filenames}, {mimes}, "", 10,
 };
-}
+} // namespace
 
-const lexer_info& ini_lexer::info() const noexcept { return ini_info; }
+const lexer_info &ini_lexer::info() const noexcept {
+    return ini_info;
+}
 
 float ini_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
@@ -42,9 +42,7 @@ state_map ini_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_ini_lexer() {
-    register_lexer([]() -> std::unique_ptr<lexer> {
-        return std::make_unique<ini_lexer>();
-    }, ini_info);
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<ini_lexer>(); }, ini_info);
 }
 
-}
+} // namespace spearmint::lexers

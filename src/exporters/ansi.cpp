@@ -9,15 +9,12 @@
 
 namespace spearmint::exporters {
 
-std::string ansi_exporter::format(
-    const token_stream& tokens,
-    const style_def_view& style) const
-{
+std::string ansi_exporter::format(const token_stream &tokens, const style_def_view &style) const {
     std::string out;
     out.reserve(tokens.size() * 20);
 
-    for (const auto& entry : tokens) {
-        const auto* rule = style.lookup(entry.type);
+    for (const auto &entry : tokens) {
+        const auto *rule = style.lookup(entry.type);
 
         bool need_reset = false;
 
@@ -64,4 +61,4 @@ std::string ansi_exporter::format(
     return out;
 }
 
-}  // namespace spearmint::exporters
+} // namespace spearmint::exporters

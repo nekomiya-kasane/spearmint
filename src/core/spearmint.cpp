@@ -7,8 +7,8 @@
 
 namespace spearmint {
 
-SPEARMINT_API const char* version() noexcept {
+SPEARMINT_API const char *version() noexcept {
     return "0.1.0";
 }
 
-}  // namespace spearmint
+} // namespace spearmint

@@ -3,17 +3,17 @@
 namespace spearmint::lexers {
 
 namespace {
-constexpr const char* aliases[] = {"php"};
-constexpr const char* filenames[] = {"*.php", "*.phtml", "*.php3", "*.php4", "*.php5"};
-constexpr const char* mimes[] = {"text/x-php", "application/x-php"};
+constexpr const char *aliases[] = {"php"};
+constexpr const char *filenames[] = {"*.php", "*.phtml", "*.php3", "*.php4", "*.php5"};
+constexpr const char *mimes[] = {"text/x-php", "application/x-php"};
 const lexer_info php_info = {
-    "php", "PHP",
-    {aliases}, {filenames}, {mimes},
-    "https://www.php.net", 10,
+    "php", "PHP", {aliases}, {filenames}, {mimes}, "https://www.php.net", 10,
 };
-}
+} // namespace
 
-const lexer_info& php_lexer::info() const noexcept { return php_info; }
+const lexer_info &php_lexer::info() const noexcept {
+    return php_info;
+}
 
 float php_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
@@ -35,10 +35,13 @@ state_map php_lexer::get_rules() const {
         {R"(//[^\n]*)", tk::comment::single, state_action::none()},
         {R"(#[^\n]*)", tk::comment::single, state_action::none()},
         {R"(/\*)", tk::comment::multiline, state_action::push_state("comment")},
-        {R"(\b(abstract|and|as|break|callable|case|catch|class|clone|const|continue|declare|default|do|else|elseif|enddeclare|endfor|endforeach|endif|endswitch|endwhile|extends|final|finally|fn|for|foreach|function|global|goto|if|implements|include|include_once|instanceof|insteadof|interface|match|namespace|new|or|private|protected|public|readonly|require|require_once|return|static|switch|throw|trait|try|use|var|while|xor|yield|yield from|enum)\b)", tk::keyword::self, state_action::none()},
+        {R"(\b(abstract|and|as|break|callable|case|catch|class|clone|const|continue|declare|default|do|else|elseif|enddeclare|endfor|endforeach|endif|endswitch|endwhile|extends|final|finally|fn|for|foreach|function|global|goto|if|implements|include|include_once|instanceof|insteadof|interface|match|namespace|new|or|private|protected|public|readonly|require|require_once|return|static|switch|throw|trait|try|use|var|while|xor|yield|yield from|enum)\b)",
+         tk::keyword::self, state_action::none()},
         {R"(\b(true|false|null|TRUE|FALSE|NULL)\b)", tk::keyword::constant, state_action::none()},
-        {R"(\b(int|float|bool|string|array|object|void|never|mixed|self|parent|static|iterable|callable)\b)", tk::keyword::type, state_action::none()},
-        {R"(\b(echo|print|die|exit|isset|unset|empty|list|array|new|clone)\b)", tk::name::builtin, state_action::none()},
+        {R"(\b(int|float|bool|string|array|object|void|never|mixed|self|parent|static|iterable|callable)\b)",
+         tk::keyword::type, state_action::none()},
+        {R"(\b(echo|print|die|exit|isset|unset|empty|list|array|new|clone)\b)", tk::name::builtin,
+         state_action::none()},
         {R"(\$[a-zA-Z_]\w*)", tk::name::variable, state_action::none()},
         {R"(0x[0-9a-fA-F_]+)", tk::literal::number::hex, state_action::none()},
         {R"(0b[01_]+)", tk::literal::number::bin, state_action::none()},
@@ -75,9 +78,7 @@ state_map php_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_php_lexer() {
-    register_lexer([]() -> std::unique_ptr<lexer> {
-        return std::make_unique<php_lexer>();
-    }, php_info);
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<php_lexer>(); }, php_info);
 }
 
-}
+} // namespace spearmint::lexers

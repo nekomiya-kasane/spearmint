@@ -3,17 +3,17 @@
 namespace spearmint::lexers {
 
 namespace {
-constexpr const char* aliases[] = {"dockerfile", "docker"};
-constexpr const char* filenames[] = {"Dockerfile", "Dockerfile.*", "*.dockerfile"};
-constexpr const char* mimes[] = {"text/x-dockerfile-config"};
+constexpr const char *aliases[] = {"dockerfile", "docker"};
+constexpr const char *filenames[] = {"Dockerfile", "Dockerfile.*", "*.dockerfile"};
+constexpr const char *mimes[] = {"text/x-dockerfile-config"};
 const lexer_info df_info = {
-    "dockerfile", "Dockerfile",
-    {aliases}, {filenames}, {mimes},
-    "https://docs.docker.com/reference/dockerfile/", 10,
+    "dockerfile", "Dockerfile", {aliases}, {filenames}, {mimes}, "https://docs.docker.com/reference/dockerfile/", 10,
 };
-}
+} // namespace
 
-const lexer_info& dockerfile_lexer::info() const noexcept { return df_info; }
+const lexer_info &dockerfile_lexer::info() const noexcept {
+    return df_info;
+}
 
 float dockerfile_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
@@ -30,7 +30,8 @@ state_map dockerfile_lexer::get_rules() const {
     rules["root"] = {
         {R"(\s+)", tk::whitespace, state_action::none()},
         {R"(#[^\n]*)", tk::comment::single, state_action::none()},
-        {R"(\b(?i)(FROM|AS|MAINTAINER|RUN|CMD|LABEL|EXPOSE|ENV|ADD|COPY|ENTRYPOINT|VOLUME|USER|WORKDIR|ARG|ONBUILD|STOPSIGNAL|HEALTHCHECK|SHELL)\b)", tk::keyword::self, state_action::none()},
+        {R"(\b(?i)(FROM|AS|MAINTAINER|RUN|CMD|LABEL|EXPOSE|ENV|ADD|COPY|ENTRYPOINT|VOLUME|USER|WORKDIR|ARG|ONBUILD|STOPSIGNAL|HEALTHCHECK|SHELL)\b)",
+         tk::keyword::self, state_action::none()},
         {R"(\$\{[^}]+\})", tk::name::variable, state_action::none()},
         {R"(\$[a-zA-Z_]\w*)", tk::name::variable, state_action::none()},
         {R"(")", tk::literal::string::double_, state_action::push_state("string")},
@@ -53,9 +54,7 @@ state_map dockerfile_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_dockerfile_lexer() {
-    register_lexer([]() -> std::unique_ptr<lexer> {
-        return std::make_unique<dockerfile_lexer>();
-    }, df_info);
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<dockerfile_lexer>(); }, df_info);
 }
 
-}
+} // namespace spearmint::lexers

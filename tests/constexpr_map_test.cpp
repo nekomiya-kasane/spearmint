@@ -1,13 +1,17 @@
-#include <gtest/gtest.h>
-
 #include "spearmint/detail/constexpr_map.h"
+
+#include <gtest/gtest.h>
 
 using namespace spearmint::detail;
 
 // ── Compile-time tests ─────────────────────────────────────────────────
 
-constexpr auto int_map = make_sorted_map<int, const char*, 5>({{
-    {3, "three"}, {1, "one"}, {5, "five"}, {2, "two"}, {4, "four"},
+constexpr auto int_map = make_sorted_map<int, const char *, 5>({{
+    {3, "three"},
+    {1, "one"},
+    {5, "five"},
+    {2, "two"},
+    {4, "four"},
 }});
 
 static_assert(int_map.size() == 5);
@@ -37,7 +41,7 @@ static_assert(single_map.at(42) == 100);
 // ── Runtime tests ──────────────────────────────────────────────────────
 
 TEST(ConstexprMapTest, FindExisting) {
-    const auto* v = int_map.find(3);
+    const auto *v = int_map.find(3);
     ASSERT_NE(v, nullptr);
     EXPECT_STREQ(*v, "three");
 }
@@ -68,8 +72,16 @@ TEST(ConstexprMapTest, SortedOrder) {
 
 TEST(ConstexprMapTest, LargerMap) {
     constexpr auto big = make_sorted_map<int, int, 10>({{
-        {100, 0}, {50, 1}, {75, 2}, {25, 3}, {10, 4},
-        {90, 5}, {60, 6}, {30, 7}, {80, 8}, {40, 9},
+        {100, 0},
+        {50, 1},
+        {75, 2},
+        {25, 3},
+        {10, 4},
+        {90, 5},
+        {60, 6},
+        {30, 7},
+        {80, 8},
+        {40, 9},
     }});
 
     // Verify all found

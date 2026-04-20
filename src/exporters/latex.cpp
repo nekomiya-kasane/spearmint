@@ -14,26 +14,45 @@ std::string latex_exporter::escape_latex(std::string_view text) {
     out.reserve(text.size());
     for (char c : text) {
         switch (c) {
-            case '\\': out += "\\textbackslash{}"; break;
-            case '{':  out += "\\{"; break;
-            case '}':  out += "\\}"; break;
-            case '$':  out += "\\$"; break;
-            case '&':  out += "\\&"; break;
-            case '#':  out += "\\#"; break;
-            case '%':  out += "\\%"; break;
-            case '_':  out += "\\_"; break;
-            case '~':  out += "\\textasciitilde{}"; break;
-            case '^':  out += "\\textasciicircum{}"; break;
-            default:   out += c; break;
+        case '\\':
+            out += "\\textbackslash{}";
+            break;
+        case '{':
+            out += "\\{";
+            break;
+        case '}':
+            out += "\\}";
+            break;
+        case '$':
+            out += "\\$";
+            break;
+        case '&':
+            out += "\\&";
+            break;
+        case '#':
+            out += "\\#";
+            break;
+        case '%':
+            out += "\\%";
+            break;
+        case '_':
+            out += "\\_";
+            break;
+        case '~':
+            out += "\\textasciitilde{}";
+            break;
+        case '^':
+            out += "\\textasciicircum{}";
+            break;
+        default:
+            out += c;
+            break;
         }
     }
     return out;
 }
 
-std::string latex_exporter::format(
-    const token_stream& tokens,
-    const style_def_view& style) const
-{
+std::string latex_exporter::format(const token_stream &tokens, const style_def_view &style) const {
     std::string out;
     out.reserve(tokens.size() * 40);
 
@@ -47,8 +66,8 @@ std::string latex_exporter::format(
         out += "}[commandchars=\\\\\\{\\}]\n";
     }
 
-    for (const auto& entry : tokens) {
-        const auto* rule = style.lookup(entry.type);
+    for (const auto &entry : tokens) {
+        const auto *rule = style.lookup(entry.type);
 
         if (rule && rule->has_fg) {
             char buf[32];
@@ -93,4 +112,4 @@ std::string latex_exporter::format(
     return out;
 }
 
-}  // namespace spearmint::exporters
+} // namespace spearmint::exporters

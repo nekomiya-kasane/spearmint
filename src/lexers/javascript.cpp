@@ -9,19 +9,21 @@ namespace spearmint::lexers {
 
 namespace {
 
-constexpr const char* aliases[] = {"javascript", "js", "ecmascript"};
-constexpr const char* filenames[] = {"*.js", "*.mjs", "*.cjs", "*.jsx"};
-constexpr const char* mimes[] = {"text/javascript", "application/javascript"};
+constexpr const char *aliases[] = {"javascript", "js", "ecmascript"};
+constexpr const char *filenames[] = {"*.js", "*.mjs", "*.cjs", "*.jsx"};
+constexpr const char *mimes[] = {"text/javascript", "application/javascript"};
 
 const lexer_info js_info = {
-    "javascript", "JavaScript",
-    {aliases}, {filenames}, {mimes},
-    "https://developer.mozilla.org/en-US/docs/Web/JavaScript", 10,
+    "javascript", "JavaScript", {aliases},
+    {filenames},  {mimes},      "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+    10,
 };
 
-}  // namespace
+} // namespace
 
-const lexer_info& javascript_lexer::info() const noexcept { return js_info; }
+const lexer_info &javascript_lexer::info() const noexcept {
+    return js_info;
+}
 
 float javascript_lexer::analyse_text(std::string_view source) const noexcept {
     float score = 0.0f;
@@ -140,10 +142,7 @@ state_map javascript_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_javascript_lexer() {
-    register_lexer(
-        []() -> std::unique_ptr<lexer> { return std::make_unique<javascript_lexer>(); },
-        js_info
-    );
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<javascript_lexer>(); }, js_info);
 }
 
-}  // namespace spearmint::lexers
+} // namespace spearmint::lexers

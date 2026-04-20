@@ -14,12 +14,24 @@ std::string svg_exporter::escape_xml(std::string_view text) {
     out.reserve(text.size());
     for (char c : text) {
         switch (c) {
-            case '&':  out += "&amp;"; break;
-            case '<':  out += "&lt;"; break;
-            case '>':  out += "&gt;"; break;
-            case '"':  out += "&quot;"; break;
-            case '\'': out += "&apos;"; break;
-            default:   out += c; break;
+        case '&':
+            out += "&amp;";
+            break;
+        case '<':
+            out += "&lt;";
+            break;
+        case '>':
+            out += "&gt;";
+            break;
+        case '"':
+            out += "&quot;";
+            break;
+        case '\'':
+            out += "&apos;";
+            break;
+        default:
+            out += c;
+            break;
         }
     }
     return out;
@@ -31,15 +43,12 @@ std::string svg_exporter::color_to_hex(uint32_t color) {
     return buf;
 }
 
-std::string svg_exporter::format(
-    const token_stream& tokens,
-    const style_def_view& style) const
-{
+std::string svg_exporter::format(const token_stream &tokens, const style_def_view &style) const {
     // First pass: compute dimensions
     int max_cols = 0;
     int lines = 1;
     int col = 0;
-    for (const auto& entry : tokens) {
+    for (const auto &entry : tokens) {
         for (char c : entry.text) {
             if (c == '\n') {
                 if (col > max_cols) max_cols = col;
@@ -62,16 +71,14 @@ std::string svg_exporter::format(
     out.reserve(tokens.size() * 60);
 
     char buf[256];
-    std::snprintf(buf, sizeof(buf),
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\">\n",
-        width, height);
+    std::snprintf(buf, sizeof(buf), "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\">\n", width,
+                  height);
     out += buf;
 
     // Background
     if (style.has_background) {
-        std::snprintf(buf, sizeof(buf),
-            "<rect width=\"100%%\" height=\"100%%\" fill=\"%s\"/>\n",
-            color_to_hex(style.background_color).c_str());
+        std::snprintf(buf, sizeof(buf), "<rect width=\"100%%\" height=\"100%%\" fill=\"%s\"/>\n",
+                      color_to_hex(style.background_color).c_str());
         out += buf;
     }
 
@@ -79,8 +86,8 @@ std::string svg_exporter::format(
     int x = opts_.padding;
     int y = opts_.padding + opts_.font_size;
 
-    for (const auto& entry : tokens) {
-        const auto* rule = style.lookup(entry.type);
+    for (const auto &entry : tokens) {
+        const auto *rule = style.lookup(entry.type);
 
         // Split text by newlines
         std::size_t start = 0;
@@ -133,4 +140,4 @@ std::string svg_exporter::format(
     return out;
 }
 
-}  // namespace spearmint::exporters
+} // namespace spearmint::exporters

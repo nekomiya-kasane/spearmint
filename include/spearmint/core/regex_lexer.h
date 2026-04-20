@@ -9,13 +9,13 @@
  * The engine tries rules in order, emits tokens, and transitions states.
  */
 
+#include "spearmint/core/lexer.h"
+
 #include <regex>
 #include <string>
 #include <string_view>
-#include <vector>
 #include <unordered_map>
-
-#include "spearmint/core/lexer.h"
+#include <vector>
 
 namespace spearmint {
 
@@ -26,14 +26,14 @@ namespace spearmint {
  */
 struct state_action {
     enum kind : uint8_t {
-        stay,       ///< remain in current state
-        push,       ///< push a new state onto the stack
-        pop,        ///< pop the current state
-        push_pop,   ///< pop then push (replace top)
+        stay,     ///< remain in current state
+        push,     ///< push a new state onto the stack
+        pop,      ///< pop the current state
+        push_pop, ///< pop then push (replace top)
     };
 
     kind type = stay;
-    std::string target;  ///< state name for push/push_pop
+    std::string target; ///< state name for push/push_pop
 
     static state_action none() { return {stay, {}}; }
     static state_action push_state(std::string s) { return {push, std::move(s)}; }
@@ -84,7 +84,7 @@ struct compiled_rule {
 using compiled_state = std::vector<compiled_rule>;
 using compiled_state_map = std::unordered_map<std::string, compiled_state>;
 
-}  // namespace detail
+} // namespace detail
 
 // ── regex_lexer ────────────────────────────────────────────────────────
 
@@ -95,10 +95,10 @@ using compiled_state_map = std::unordered_map<std::string, compiled_state>;
  * The tokenizer compiles regexes once and caches them.
  */
 class SPEARMINT_API regex_lexer : public lexer {
-public:
+  public:
     [[nodiscard]] tokenize_result tokenize(std::string_view source) const override;
 
-protected:
+  protected:
     /**
      * @brief Define the lexer's state machine.
      *
@@ -111,9 +111,9 @@ protected:
      */
     void ensure_compiled() const;
 
-private:
+  private:
     mutable detail::compiled_state_map compiled_;
     mutable bool compiled_ready_ = false;
 };
 
-}  // namespace spearmint
+} // namespace spearmint

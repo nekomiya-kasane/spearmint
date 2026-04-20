@@ -23,14 +23,13 @@ namespace spearmint::detail {
  *
  * Keys must support operator<. The array must be sorted by key at construction.
  */
-template <typename Key, typename Value, std::size_t N>
-struct constexpr_map {
+template <typename Key, typename Value, std::size_t N> struct constexpr_map {
     std::array<std::pair<Key, Value>, N> data{};
 
     /**
      * @brief Find a value by key. Returns nullptr if not found.
      */
-    [[nodiscard]] constexpr const Value* find(const Key& key) const noexcept {
+    [[nodiscard]] constexpr const Value *find(const Key &key) const noexcept {
         std::size_t lo = 0;
         std::size_t hi = N;
         while (lo < hi) {
@@ -49,15 +48,13 @@ struct constexpr_map {
     /**
      * @brief Check if a key exists.
      */
-    [[nodiscard]] constexpr bool contains(const Key& key) const noexcept {
-        return find(key) != nullptr;
-    }
+    [[nodiscard]] constexpr bool contains(const Key &key) const noexcept { return find(key) != nullptr; }
 
     /**
      * @brief Get value by key. UB if key not found — use only when certain.
      */
-    [[nodiscard]] constexpr const Value& at(const Key& key) const noexcept {
-        const Value* v = find(key);
+    [[nodiscard]] constexpr const Value &at(const Key &key) const noexcept {
+        const Value *v = find(key);
         return *v;
     }
 
@@ -71,8 +68,7 @@ struct constexpr_map {
  * @brief Constexpr insertion sort for building sorted maps.
  */
 template <typename Key, typename Value, std::size_t N>
-consteval constexpr_map<Key, Value, N> make_sorted_map(
-    std::array<std::pair<Key, Value>, N> arr) {
+consteval constexpr_map<Key, Value, N> make_sorted_map(std::array<std::pair<Key, Value>, N> arr) {
     // Insertion sort
     for (std::size_t i = 1; i < N; ++i) {
         auto tmp = arr[i];
@@ -86,4 +82,4 @@ consteval constexpr_map<Key, Value, N> make_sorted_map(
     return {arr};
 }
 
-}  // namespace spearmint::detail
+} // namespace spearmint::detail

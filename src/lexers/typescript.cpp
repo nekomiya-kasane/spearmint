@@ -3,17 +3,17 @@
 namespace spearmint::lexers {
 
 namespace {
-constexpr const char* aliases[] = {"typescript", "ts"};
-constexpr const char* filenames[] = {"*.ts", "*.tsx", "*.mts", "*.cts"};
-constexpr const char* mimes[] = {"text/typescript", "application/typescript"};
+constexpr const char *aliases[] = {"typescript", "ts"};
+constexpr const char *filenames[] = {"*.ts", "*.tsx", "*.mts", "*.cts"};
+constexpr const char *mimes[] = {"text/typescript", "application/typescript"};
 const lexer_info ts_info = {
-    "typescript", "TypeScript",
-    {aliases}, {filenames}, {mimes},
-    "https://www.typescriptlang.org", 10,
+    "typescript", "TypeScript", {aliases}, {filenames}, {mimes}, "https://www.typescriptlang.org", 10,
 };
-}
+} // namespace
 
-const lexer_info& typescript_lexer::info() const noexcept { return ts_info; }
+const lexer_info &typescript_lexer::info() const noexcept {
+    return ts_info;
+}
 
 float typescript_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
@@ -32,10 +32,13 @@ state_map typescript_lexer::get_rules() const {
         {R"(\s+)", tk::whitespace, state_action::none()},
         {R"(//[^\n]*)", tk::comment::single, state_action::none()},
         {R"(/\*)", tk::comment::multiline, state_action::push_state("comment")},
-        {R"(\b(abstract|as|async|await|break|case|catch|class|const|continue|debugger|declare|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|keyof|let|module|namespace|new|of|override|package|private|protected|public|readonly|return|satisfies|set|static|super|switch|this|throw|try|type|typeof|var|void|while|with|yield)\b)", tk::keyword::self, state_action::none()},
+        {R"(\b(abstract|as|async|await|break|case|catch|class|const|continue|debugger|declare|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|keyof|let|module|namespace|new|of|override|package|private|protected|public|readonly|return|satisfies|set|static|super|switch|this|throw|try|type|typeof|var|void|while|with|yield)\b)",
+         tk::keyword::self, state_action::none()},
         {R"(\b(true|false|null|undefined|NaN|Infinity)\b)", tk::keyword::constant, state_action::none()},
-        {R"(\b(any|bigint|boolean|never|number|object|string|symbol|unknown|void)\b)", tk::keyword::type, state_action::none()},
-        {R"(\b(Array|Boolean|Date|Error|Function|JSON|Map|Math|Number|Object|Promise|Proxy|RegExp|Set|String|Symbol|WeakMap|WeakSet|console|document|window|globalThis)\b)", tk::name::builtin, state_action::none()},
+        {R"(\b(any|bigint|boolean|never|number|object|string|symbol|unknown|void)\b)", tk::keyword::type,
+         state_action::none()},
+        {R"(\b(Array|Boolean|Date|Error|Function|JSON|Map|Math|Number|Object|Promise|Proxy|RegExp|Set|String|Symbol|WeakMap|WeakSet|console|document|window|globalThis)\b)",
+         tk::name::builtin, state_action::none()},
         {R"(0x[0-9a-fA-F_]+n?)", tk::literal::number::hex, state_action::none()},
         {R"(0o[0-7_]+n?)", tk::literal::number::oct, state_action::none()},
         {R"(0b[01_]+n?)", tk::literal::number::bin, state_action::none()},
@@ -86,9 +89,7 @@ state_map typescript_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_typescript_lexer() {
-    register_lexer([]() -> std::unique_ptr<lexer> {
-        return std::make_unique<typescript_lexer>();
-    }, ts_info);
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<typescript_lexer>(); }, ts_info);
 }
 
-}
+} // namespace spearmint::lexers

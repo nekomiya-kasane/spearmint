@@ -3,17 +3,17 @@
 namespace spearmint::lexers {
 
 namespace {
-constexpr const char* aliases[] = {"markdown", "md"};
-constexpr const char* filenames[] = {"*.md", "*.markdown", "*.mkd"};
-constexpr const char* mimes[] = {"text/markdown"};
+constexpr const char *aliases[] = {"markdown", "md"};
+constexpr const char *filenames[] = {"*.md", "*.markdown", "*.mkd"};
+constexpr const char *mimes[] = {"text/markdown"};
 const lexer_info md_info = {
-    "markdown", "Markdown",
-    {aliases}, {filenames}, {mimes},
-    "https://commonmark.org", 10,
+    "markdown", "Markdown", {aliases}, {filenames}, {mimes}, "https://commonmark.org", 10,
 };
-}
+} // namespace
 
-const lexer_info& markdown_lexer::info() const noexcept { return md_info; }
+const lexer_info &markdown_lexer::info() const noexcept {
+    return md_info;
+}
 
 float markdown_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
@@ -58,9 +58,7 @@ state_map markdown_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_markdown_lexer() {
-    register_lexer([]() -> std::unique_ptr<lexer> {
-        return std::make_unique<markdown_lexer>();
-    }, md_info);
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<markdown_lexer>(); }, md_info);
 }
 
-}
+} // namespace spearmint::lexers

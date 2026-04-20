@@ -3,17 +3,17 @@
 namespace spearmint::lexers {
 
 namespace {
-constexpr const char* aliases[] = {"yaml", "yml"};
-constexpr const char* filenames[] = {"*.yaml", "*.yml"};
-constexpr const char* mimes[] = {"text/x-yaml"};
+constexpr const char *aliases[] = {"yaml", "yml"};
+constexpr const char *filenames[] = {"*.yaml", "*.yml"};
+constexpr const char *mimes[] = {"text/x-yaml"};
 const lexer_info yaml_info = {
-    "yaml", "YAML",
-    {aliases}, {filenames}, {mimes},
-    "https://yaml.org", 10,
+    "yaml", "YAML", {aliases}, {filenames}, {mimes}, "https://yaml.org", 10,
 };
-}
+} // namespace
 
-const lexer_info& yaml_lexer::info() const noexcept { return yaml_info; }
+const lexer_info &yaml_lexer::info() const noexcept {
+    return yaml_info;
+}
 
 float yaml_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
@@ -62,9 +62,7 @@ state_map yaml_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_yaml_lexer() {
-    register_lexer([]() -> std::unique_ptr<lexer> {
-        return std::make_unique<yaml_lexer>();
-    }, yaml_info);
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<yaml_lexer>(); }, yaml_info);
 }
 
-}
+} // namespace spearmint::lexers

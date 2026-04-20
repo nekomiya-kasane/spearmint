@@ -3,17 +3,17 @@
 namespace spearmint::lexers {
 
 namespace {
-constexpr const char* aliases[] = {"css"};
-constexpr const char* filenames[] = {"*.css"};
-constexpr const char* mimes[] = {"text/css"};
+constexpr const char *aliases[] = {"css"};
+constexpr const char *filenames[] = {"*.css"};
+constexpr const char *mimes[] = {"text/css"};
 const lexer_info css_info = {
-    "css", "CSS",
-    {aliases}, {filenames}, {mimes},
-    "https://www.w3.org/Style/CSS/", 10,
+    "css", "CSS", {aliases}, {filenames}, {mimes}, "https://www.w3.org/Style/CSS/", 10,
 };
-}
+} // namespace
 
-const lexer_info& css_lexer::info() const noexcept { return css_info; }
+const lexer_info &css_lexer::info() const noexcept {
+    return css_info;
+}
 
 float css_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
@@ -35,9 +35,11 @@ state_map css_lexer::get_rules() const {
         {R"(#[a-zA-Z_][\w-]*)", tk::name::label, state_action::none()},
         {R"(::[a-zA-Z-]+)", tk::name::decorator, state_action::none()},
         {R"(:[a-zA-Z-]+)", tk::name::decorator, state_action::none()},
-        {R"(\b(inherit|initial|unset|revert|none|auto|normal|bold|italic|underline|solid|dashed|dotted|block|inline|flex|grid|absolute|relative|fixed|sticky|hidden|visible|transparent|currentColor|important)\b)", tk::keyword::constant, state_action::none()},
+        {R"(\b(inherit|initial|unset|revert|none|auto|normal|bold|italic|underline|solid|dashed|dotted|block|inline|flex|grid|absolute|relative|fixed|sticky|hidden|visible|transparent|currentColor|important)\b)",
+         tk::keyword::constant, state_action::none()},
         {R"(!important)", tk::keyword::self, state_action::none()},
-        {R"([0-9]+(\.[0-9]+)?(px|em|rem|%|vh|vw|vmin|vmax|ch|ex|cm|mm|in|pt|pc|deg|rad|grad|turn|s|ms|Hz|kHz|dpi|dpcm|dppx|fr)?)", tk::literal::number::self, state_action::none()},
+        {R"([0-9]+(\.[0-9]+)?(px|em|rem|%|vh|vw|vmin|vmax|ch|ex|cm|mm|in|pt|pc|deg|rad|grad|turn|s|ms|Hz|kHz|dpi|dpcm|dppx|fr)?)",
+         tk::literal::number::self, state_action::none()},
         {R"(#[0-9a-fA-F]{3,8})", tk::literal::number::hex, state_action::none()},
         {R"(")", tk::literal::string::double_, state_action::push_state("dstring")},
         {R"(')", tk::literal::string::single, state_action::push_state("sstring")},
@@ -66,9 +68,7 @@ state_map css_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_css_lexer() {
-    register_lexer([]() -> std::unique_ptr<lexer> {
-        return std::make_unique<css_lexer>();
-    }, css_info);
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<css_lexer>(); }, css_info);
 }
 
-}
+} // namespace spearmint::lexers

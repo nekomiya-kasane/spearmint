@@ -18,10 +18,10 @@ void regex_lexer::ensure_compiled() const {
     if (compiled_ready_) return;
 
     auto rules = get_rules();
-    for (auto& [state_name, rlist] : rules) {
+    for (auto &[state_name, rlist] : rules) {
         detail::compiled_state cs;
         cs.reserve(rlist.size());
-        for (auto& r : rlist) {
+        for (auto &r : rlist) {
             detail::compiled_rule cr;
             cr.re = std::regex(r.pattern, std::regex::ECMAScript | std::regex::optimize);
             cr.token = r.token;
@@ -41,7 +41,7 @@ tokenize_result regex_lexer::tokenize(std::string_view source) const {
     out.source = preprocess(source);
     std::string_view src = out.source;
 
-    out.tokens.reserve(src.size() / 4);  // heuristic
+    out.tokens.reserve(src.size() / 4); // heuristic
 
     // State stack
     std::vector<std::string> state_stack;
@@ -50,21 +50,20 @@ tokenize_result regex_lexer::tokenize(std::string_view source) const {
     std::size_t pos = 0;
 
     while (pos < src.size()) {
-        const auto& current_state = state_stack.back();
+        const auto &current_state = state_stack.back();
         auto it = compiled_.find(current_state);
         if (it == compiled_.end()) break;
 
-        const auto& rules = it->second;
+        const auto &rules = it->second;
         bool matched = false;
 
-        for (const auto& rule : rules) {
+        for (const auto &rule : rules) {
             std::cmatch m;
-            const char* start = src.data() + pos;
+            const char *start = src.data() + pos;
             std::size_t remaining = src.size() - pos;
 
-            if (std::regex_search(start, start + remaining, m, rule.re,
-                                  std::regex_constants::match_continuous)) {
-                if (m.length(0) == 0) continue;  // skip zero-length matches
+            if (std::regex_search(start, start + remaining, m, rule.re, std::regex_constants::match_continuous)) {
+                if (m.length(0) == 0) continue; // skip zero-length matches
 
                 if (!rule.group_tokens.empty()) {
                     // Multi-group: each capture group → different token
@@ -84,18 +83,18 @@ tokenize_result regex_lexer::tokenize(std::string_view source) const {
 
                 // State transition
                 switch (rule.action.type) {
-                    case state_action::stay:
-                        break;
-                    case state_action::push:
-                        state_stack.push_back(rule.action.target);
-                        break;
-                    case state_action::pop:
-                        if (state_stack.size() > 1) state_stack.pop_back();
-                        break;
-                    case state_action::push_pop:
-                        if (state_stack.size() > 1) state_stack.pop_back();
-                        state_stack.push_back(rule.action.target);
-                        break;
+                case state_action::stay:
+                    break;
+                case state_action::push:
+                    state_stack.push_back(rule.action.target);
+                    break;
+                case state_action::pop:
+                    if (state_stack.size() > 1) state_stack.pop_back();
+                    break;
+                case state_action::push_pop:
+                    if (state_stack.size() > 1) state_stack.pop_back();
+                    state_stack.push_back(rule.action.target);
+                    break;
                 }
 
                 matched = true;
@@ -113,4 +112,4 @@ tokenize_result regex_lexer::tokenize(std::string_view source) const {
     return out;
 }
 
-}  // namespace spearmint
+} // namespace spearmint

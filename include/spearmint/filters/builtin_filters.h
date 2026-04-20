@@ -38,9 +38,7 @@ SPEARMINT_API token_filter remap_token(token_type from, token_type to);
 /**
  * @brief Replace token type based on a predicate.
  */
-SPEARMINT_API token_filter remap_if(
-    std::function<bool(const token_entry&)> pred,
-    token_type new_type);
+SPEARMINT_API token_filter remap_if(std::function<bool(const token_entry &)> pred, token_type new_type);
 
 /**
  * @brief Trim leading and trailing whitespace tokens from the stream.
@@ -52,4 +50,4 @@ SPEARMINT_API token_filter trim();
  */
 SPEARMINT_API token_filter normalize_whitespace();
 
-}  // namespace spearmint::filters
+} // namespace spearmint::filters

@@ -1,27 +1,21 @@
-#include <gtest/gtest.h>
-
+#include "spearmint/core/style.h"
 #include "spearmint/core/token.h"
 #include "spearmint/core/token_stream.h"
-#include "spearmint/core/style.h"
-#include "spearmint/styles/builtin.h"
-#include "spearmint/exporters/html.h"
 #include "spearmint/exporters/ansi.h"
-#include "spearmint/exporters/svg.h"
+#include "spearmint/exporters/html.h"
 #include "spearmint/exporters/latex.h"
+#include "spearmint/exporters/svg.h"
+#include "spearmint/styles/builtin.h"
+
+#include <gtest/gtest.h>
 
 using namespace spearmint;
 
 static token_stream make_sample() {
     return {
-        {token::keyword::self,            "def"},
-        {token::whitespace,               " "},
-        {token::name::function,           "foo"},
-        {token::punctuation::self,        "("},
-        {token::punctuation::self,        ")"},
-        {token::punctuation::self,        ":"},
-        {token::whitespace,               "\n    "},
-        {token::keyword::self,            "pass"},
-        {token::whitespace,               "\n"},
+        {token::keyword::self, "def"},   {token::whitespace, " "},        {token::name::function, "foo"},
+        {token::punctuation::self, "("}, {token::punctuation::self, ")"}, {token::punctuation::self, ":"},
+        {token::whitespace, "\n    "},   {token::keyword::self, "pass"},  {token::whitespace, "\n"},
     };
 }
 

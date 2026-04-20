@@ -14,14 +14,14 @@
  *   static_assert(kw_rule.fg == 0xF92672);
  */
 
-#include <cstdint>
+#include "spearmint/core/token.h"
+#include "spearmint/exports.h"
+
 #include <cstddef>
+#include <cstdint>
 #include <span>
 #include <string_view>
 #include <vector>
-
-#include "spearmint/exports.h"
-#include "spearmint/core/token.h"
 
 namespace spearmint {
 
@@ -46,7 +46,7 @@ struct style_rule {
     bool has_fg = false;
     bool has_bg = false;
 
-    [[nodiscard]] constexpr bool operator==(const style_rule&) const noexcept = default;
+    [[nodiscard]] constexpr bool operator==(const style_rule &) const noexcept = default;
 
     /**
      * @brief Create a rule with foreground color.
@@ -73,10 +73,9 @@ struct style_entry {
  *
  * Used for builtin styles defined as constexpr globals.
  */
-template <std::size_t N>
-struct static_style_def {
-    const char* name = "";
-    const char* display_name = "";
+template <std::size_t N> struct static_style_def {
+    const char *name = "";
+    const char *display_name = "";
     uint32_t background_color = 0;
     bool has_background = false;
     uint32_t highlight_color = 0;
@@ -91,7 +90,7 @@ struct static_style_def {
      * Walks up the token parent chain until a match is found.
      * Returns nullptr if no rule matches.
      */
-    [[nodiscard]] constexpr const style_rule* lookup(token_type t) const noexcept {
+    [[nodiscard]] constexpr const style_rule *lookup(token_type t) const noexcept {
         // Try exact match first, then walk parents
         for (int depth = 0; depth < 8; ++depth) {
             for (std::size_t i = 0; i < N; ++i) {
@@ -102,7 +101,7 @@ struct static_style_def {
             // Walk to parent
             if (t.id >= detail::token_count) return nullptr;
             uint32_t pid = detail::token_table[t.id].parent_id;
-            if (pid == t.id) return nullptr;  // reached root with no match
+            if (pid == t.id) return nullptr; // reached root with no match
             t = detail::token_table[pid];
         }
         return nullptr;
@@ -132,25 +131,19 @@ struct style_def_view {
     /**
      * @brief Look up a style rule for a token type with parent fallback.
      */
-    [[nodiscard]] SPEARMINT_API const style_rule* lookup(token_type t) const noexcept;
+    [[nodiscard]] SPEARMINT_API const style_rule *lookup(token_type t) const noexcept;
 
     /**
      * @brief Construct from a static_style_def.
      */
     template <std::size_t N>
-    constexpr style_def_view(const static_style_def<N>& def) noexcept
-        : name(def.name)
-        , display_name(def.display_name)
-        , background_color(def.background_color)
-        , has_background(def.has_background)
-        , highlight_color(def.highlight_color)
-        , has_highlight(def.has_highlight)
-        , line_number_fg(def.line_number_fg)
-        , line_number_bg(def.line_number_bg)
-        , entries(def.entries.data(), def.entries.size())
-    {}
+    constexpr style_def_view(const static_style_def<N> &def) noexcept
+        : name(def.name), display_name(def.display_name), background_color(def.background_color),
+          has_background(def.has_background), highlight_color(def.highlight_color), has_highlight(def.has_highlight),
+          line_number_fg(def.line_number_fg), line_number_bg(def.line_number_bg),
+          entries(def.entries.data(), def.entries.size()) {}
 
     constexpr style_def_view() noexcept = default;
 };
 
-}  // namespace spearmint
+} // namespace spearmint

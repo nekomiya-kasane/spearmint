@@ -3,17 +3,17 @@
 namespace spearmint::lexers {
 
 namespace {
-constexpr const char* aliases[] = {"go", "golang"};
-constexpr const char* filenames[] = {"*.go"};
-constexpr const char* mimes[] = {"text/x-gosrc"};
+constexpr const char *aliases[] = {"go", "golang"};
+constexpr const char *filenames[] = {"*.go"};
+constexpr const char *mimes[] = {"text/x-gosrc"};
 const lexer_info go_info = {
-    "go", "Go",
-    {aliases}, {filenames}, {mimes},
-    "https://go.dev", 10,
+    "go", "Go", {aliases}, {filenames}, {mimes}, "https://go.dev", 10,
 };
-}
+} // namespace
 
-const lexer_info& go_lexer::info() const noexcept { return go_info; }
+const lexer_info &go_lexer::info() const noexcept {
+    return go_info;
+}
 
 float go_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
@@ -31,10 +31,13 @@ state_map go_lexer::get_rules() const {
         {R"(\s+)", tk::whitespace, state_action::none()},
         {R"(//[^\n]*)", tk::comment::single, state_action::none()},
         {R"(/\*)", tk::comment::multiline, state_action::push_state("comment")},
-        {R"(\b(break|case|chan|const|continue|default|defer|else|fallthrough|for|func|go|goto|if|import|interface|map|package|range|return|select|struct|switch|type|var)\b)", tk::keyword::self, state_action::none()},
-        {R"(\b(bool|byte|complex64|complex128|error|float32|float64|int|int8|int16|int32|int64|rune|string|uint|uint8|uint16|uint32|uint64|uintptr)\b)", tk::keyword::type, state_action::none()},
+        {R"(\b(break|case|chan|const|continue|default|defer|else|fallthrough|for|func|go|goto|if|import|interface|map|package|range|return|select|struct|switch|type|var)\b)",
+         tk::keyword::self, state_action::none()},
+        {R"(\b(bool|byte|complex64|complex128|error|float32|float64|int|int8|int16|int32|int64|rune|string|uint|uint8|uint16|uint32|uint64|uintptr)\b)",
+         tk::keyword::type, state_action::none()},
         {R"(\b(true|false|nil|iota)\b)", tk::keyword::constant, state_action::none()},
-        {R"(\b(append|cap|close|complex|copy|delete|imag|len|make|new|panic|print|println|real|recover)\b)", tk::name::builtin, state_action::none()},
+        {R"(\b(append|cap|close|complex|copy|delete|imag|len|make|new|panic|print|println|real|recover)\b)",
+         tk::name::builtin, state_action::none()},
         {R"(0x[0-9a-fA-F_]+)", tk::literal::number::hex, state_action::none()},
         {R"(0o[0-7_]+)", tk::literal::number::oct, state_action::none()},
         {R"(0b[01_]+)", tk::literal::number::bin, state_action::none()},
@@ -70,9 +73,7 @@ state_map go_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_go_lexer() {
-    register_lexer([]() -> std::unique_ptr<lexer> {
-        return std::make_unique<go_lexer>();
-    }, go_info);
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<go_lexer>(); }, go_info);
 }
 
-}
+} // namespace spearmint::lexers

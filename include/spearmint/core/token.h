@@ -15,10 +15,10 @@
  *   static_assert(t == token::keyword::constant);
  */
 
-#include <cstdint>
-#include <array>
-
 #include "spearmint/detail/string_utils.h"
+
+#include <array>
+#include <cstdint>
 
 namespace spearmint {
 
@@ -33,8 +33,8 @@ namespace spearmint {
 struct token_type {
     uint32_t id;
     uint32_t parent_id;
-    const char* name;        ///< e.g. "Token.Keyword.Constant"
-    const char* short_name;  ///< e.g. "Constant"
+    const char *name;       ///< e.g. "Token.Keyword.Constant"
+    const char *short_name; ///< e.g. "Constant"
 
     /**
      * @brief Check if this token is a descendant of another.
@@ -44,17 +44,11 @@ struct token_type {
      */
     [[nodiscard]] constexpr bool is_child_of(token_type other) const noexcept;
 
-    [[nodiscard]] constexpr bool operator==(token_type other) const noexcept {
-        return id == other.id;
-    }
+    [[nodiscard]] constexpr bool operator==(token_type other) const noexcept { return id == other.id; }
 
-    [[nodiscard]] constexpr bool operator!=(token_type other) const noexcept {
-        return id != other.id;
-    }
+    [[nodiscard]] constexpr bool operator!=(token_type other) const noexcept { return id != other.id; }
 
-    [[nodiscard]] constexpr bool operator<(token_type other) const noexcept {
-        return id < other.id;
-    }
+    [[nodiscard]] constexpr bool operator<(token_type other) const noexcept { return id < other.id; }
 };
 
 // ── Token ID constants ─────────────────────────────────────────────────
@@ -166,132 +160,160 @@ enum token_id : uint32_t {
     token_count = 112,
 };
 
-}  // namespace detail
+} // namespace detail
 
 // ── Token definitions ──────────────────────────────────────────────────
 
 namespace token {
 
 // Root
-inline constexpr token_type root {detail::id_root, detail::id_root, "Token", "Token"};
+inline constexpr token_type root{detail::id_root, detail::id_root, "Token", "Token"};
 
 // Top-level
-inline constexpr token_type text       {detail::id_text,       detail::id_root, "Token.Text", "Text"};
-inline constexpr token_type whitespace {detail::id_whitespace, detail::id_text, "Token.Text.Whitespace", "Whitespace"};
-inline constexpr token_type error      {detail::id_error,      detail::id_root, "Token.Error", "Error"};
-inline constexpr token_type other      {detail::id_other,      detail::id_root, "Token.Other", "Other"};
+inline constexpr token_type text{detail::id_text, detail::id_root, "Token.Text", "Text"};
+inline constexpr token_type whitespace{detail::id_whitespace, detail::id_text, "Token.Text.Whitespace", "Whitespace"};
+inline constexpr token_type error{detail::id_error, detail::id_root, "Token.Error", "Error"};
+inline constexpr token_type other{detail::id_other, detail::id_root, "Token.Other", "Other"};
 
 // Keyword
 namespace keyword {
-    inline constexpr token_type self        {detail::id_keyword,             detail::id_root,    "Token.Keyword", "Keyword"};
-    inline constexpr token_type constant    {detail::id_keyword_constant,    detail::id_keyword, "Token.Keyword.Constant", "Constant"};
-    inline constexpr token_type declaration {detail::id_keyword_declaration, detail::id_keyword, "Token.Keyword.Declaration", "Declaration"};
-    inline constexpr token_type namespace_  {detail::id_keyword_namespace,   detail::id_keyword, "Token.Keyword.Namespace", "Namespace"};
-    inline constexpr token_type pseudo      {detail::id_keyword_pseudo,      detail::id_keyword, "Token.Keyword.Pseudo", "Pseudo"};
-    inline constexpr token_type reserved    {detail::id_keyword_reserved,    detail::id_keyword, "Token.Keyword.Reserved", "Reserved"};
-    inline constexpr token_type type        {detail::id_keyword_type,        detail::id_keyword, "Token.Keyword.Type", "Type"};
-}
+inline constexpr token_type self{detail::id_keyword, detail::id_root, "Token.Keyword", "Keyword"};
+inline constexpr token_type constant{detail::id_keyword_constant, detail::id_keyword, "Token.Keyword.Constant",
+                                     "Constant"};
+inline constexpr token_type declaration{detail::id_keyword_declaration, detail::id_keyword, "Token.Keyword.Declaration",
+                                        "Declaration"};
+inline constexpr token_type namespace_{detail::id_keyword_namespace, detail::id_keyword, "Token.Keyword.Namespace",
+                                       "Namespace"};
+inline constexpr token_type pseudo{detail::id_keyword_pseudo, detail::id_keyword, "Token.Keyword.Pseudo", "Pseudo"};
+inline constexpr token_type reserved{detail::id_keyword_reserved, detail::id_keyword, "Token.Keyword.Reserved",
+                                     "Reserved"};
+inline constexpr token_type type{detail::id_keyword_type, detail::id_keyword, "Token.Keyword.Type", "Type"};
+} // namespace keyword
 
 // Name
 namespace name {
-    inline constexpr token_type self            {detail::id_name,                  detail::id_root, "Token.Name", "Name"};
-    inline constexpr token_type attribute       {detail::id_name_attribute,        detail::id_name, "Token.Name.Attribute", "Attribute"};
-    inline constexpr token_type builtin         {detail::id_name_builtin,          detail::id_name, "Token.Name.Builtin", "Builtin"};
-    inline constexpr token_type builtin_pseudo  {detail::id_name_builtin_pseudo,   detail::id_name, "Token.Name.Builtin.Pseudo", "Pseudo"};
-    inline constexpr token_type class_          {detail::id_name_class,            detail::id_name, "Token.Name.Class", "Class"};
-    inline constexpr token_type constant        {detail::id_name_constant,         detail::id_name, "Token.Name.Constant", "Constant"};
-    inline constexpr token_type decorator       {detail::id_name_decorator,        detail::id_name, "Token.Name.Decorator", "Decorator"};
-    inline constexpr token_type entity          {detail::id_name_entity,           detail::id_name, "Token.Name.Entity", "Entity"};
-    inline constexpr token_type exception       {detail::id_name_exception,        detail::id_name, "Token.Name.Exception", "Exception"};
-    inline constexpr token_type function        {detail::id_name_function,         detail::id_name, "Token.Name.Function", "Function"};
-    inline constexpr token_type function_magic  {detail::id_name_function_magic,   detail::id_name, "Token.Name.Function.Magic", "Magic"};
-    inline constexpr token_type label           {detail::id_name_label,            detail::id_name, "Token.Name.Label", "Label"};
-    inline constexpr token_type namespace_      {detail::id_name_namespace,        detail::id_name, "Token.Name.Namespace", "Namespace"};
-    inline constexpr token_type other           {detail::id_name_other,            detail::id_name, "Token.Name.Other", "Other"};
-    inline constexpr token_type property        {detail::id_name_property,         detail::id_name, "Token.Name.Property", "Property"};
-    inline constexpr token_type tag             {detail::id_name_tag,              detail::id_name, "Token.Name.Tag", "Tag"};
-    inline constexpr token_type variable        {detail::id_name_variable,         detail::id_name, "Token.Name.Variable", "Variable"};
-    inline constexpr token_type variable_class  {detail::id_name_variable_class,   detail::id_name_variable, "Token.Name.Variable.Class", "Class"};
-    inline constexpr token_type variable_global {detail::id_name_variable_global,  detail::id_name_variable, "Token.Name.Variable.Global", "Global"};
-    inline constexpr token_type variable_instance{detail::id_name_variable_instance,detail::id_name_variable, "Token.Name.Variable.Instance", "Instance"};
-    inline constexpr token_type variable_magic  {detail::id_name_variable_magic,   detail::id_name_variable, "Token.Name.Variable.Magic", "Magic"};
-}
+inline constexpr token_type self{detail::id_name, detail::id_root, "Token.Name", "Name"};
+inline constexpr token_type attribute{detail::id_name_attribute, detail::id_name, "Token.Name.Attribute", "Attribute"};
+inline constexpr token_type builtin{detail::id_name_builtin, detail::id_name, "Token.Name.Builtin", "Builtin"};
+inline constexpr token_type builtin_pseudo{detail::id_name_builtin_pseudo, detail::id_name, "Token.Name.Builtin.Pseudo",
+                                           "Pseudo"};
+inline constexpr token_type class_{detail::id_name_class, detail::id_name, "Token.Name.Class", "Class"};
+inline constexpr token_type constant{detail::id_name_constant, detail::id_name, "Token.Name.Constant", "Constant"};
+inline constexpr token_type decorator{detail::id_name_decorator, detail::id_name, "Token.Name.Decorator", "Decorator"};
+inline constexpr token_type entity{detail::id_name_entity, detail::id_name, "Token.Name.Entity", "Entity"};
+inline constexpr token_type exception{detail::id_name_exception, detail::id_name, "Token.Name.Exception", "Exception"};
+inline constexpr token_type function{detail::id_name_function, detail::id_name, "Token.Name.Function", "Function"};
+inline constexpr token_type function_magic{detail::id_name_function_magic, detail::id_name, "Token.Name.Function.Magic",
+                                           "Magic"};
+inline constexpr token_type label{detail::id_name_label, detail::id_name, "Token.Name.Label", "Label"};
+inline constexpr token_type namespace_{detail::id_name_namespace, detail::id_name, "Token.Name.Namespace", "Namespace"};
+inline constexpr token_type other{detail::id_name_other, detail::id_name, "Token.Name.Other", "Other"};
+inline constexpr token_type property{detail::id_name_property, detail::id_name, "Token.Name.Property", "Property"};
+inline constexpr token_type tag{detail::id_name_tag, detail::id_name, "Token.Name.Tag", "Tag"};
+inline constexpr token_type variable{detail::id_name_variable, detail::id_name, "Token.Name.Variable", "Variable"};
+inline constexpr token_type variable_class{detail::id_name_variable_class, detail::id_name_variable,
+                                           "Token.Name.Variable.Class", "Class"};
+inline constexpr token_type variable_global{detail::id_name_variable_global, detail::id_name_variable,
+                                            "Token.Name.Variable.Global", "Global"};
+inline constexpr token_type variable_instance{detail::id_name_variable_instance, detail::id_name_variable,
+                                              "Token.Name.Variable.Instance", "Instance"};
+inline constexpr token_type variable_magic{detail::id_name_variable_magic, detail::id_name_variable,
+                                           "Token.Name.Variable.Magic", "Magic"};
+} // namespace name
 
 // Literal
 namespace literal {
-    inline constexpr token_type self {detail::id_literal,      detail::id_root,    "Token.Literal", "Literal"};
-    inline constexpr token_type date {detail::id_literal_date, detail::id_literal, "Token.Literal.Date", "Date"};
+inline constexpr token_type self{detail::id_literal, detail::id_root, "Token.Literal", "Literal"};
+inline constexpr token_type date{detail::id_literal_date, detail::id_literal, "Token.Literal.Date", "Date"};
 
-    // String
-    namespace string {
-        inline constexpr token_type self      {detail::id_string,           detail::id_literal, "Token.Literal.String", "String"};
-        inline constexpr token_type affix     {detail::id_string_affix,     detail::id_string,  "Token.Literal.String.Affix", "Affix"};
-        inline constexpr token_type backtick  {detail::id_string_backtick,  detail::id_string,  "Token.Literal.String.Backtick", "Backtick"};
-        inline constexpr token_type char_     {detail::id_string_char,      detail::id_string,  "Token.Literal.String.Char", "Char"};
-        inline constexpr token_type delimiter {detail::id_string_delimiter, detail::id_string,  "Token.Literal.String.Delimiter", "Delimiter"};
-        inline constexpr token_type doc       {detail::id_string_doc,       detail::id_string,  "Token.Literal.String.Doc", "Doc"};
-        inline constexpr token_type double_   {detail::id_string_double,    detail::id_string,  "Token.Literal.String.Double", "Double"};
-        inline constexpr token_type escape    {detail::id_string_escape,    detail::id_string,  "Token.Literal.String.Escape", "Escape"};
-        inline constexpr token_type heredoc   {detail::id_string_heredoc,   detail::id_string,  "Token.Literal.String.Heredoc", "Heredoc"};
-        inline constexpr token_type interpol  {detail::id_string_interpol,  detail::id_string,  "Token.Literal.String.Interpol", "Interpol"};
-        inline constexpr token_type other     {detail::id_string_other,     detail::id_string,  "Token.Literal.String.Other", "Other"};
-        inline constexpr token_type regex     {detail::id_string_regex,     detail::id_string,  "Token.Literal.String.Regex", "Regex"};
-        inline constexpr token_type single    {detail::id_string_single,    detail::id_string,  "Token.Literal.String.Single", "Single"};
-        inline constexpr token_type symbol    {detail::id_string_symbol,    detail::id_string,  "Token.Literal.String.Symbol", "Symbol"};
-    }
+// String
+namespace string {
+inline constexpr token_type self{detail::id_string, detail::id_literal, "Token.Literal.String", "String"};
+inline constexpr token_type affix{detail::id_string_affix, detail::id_string, "Token.Literal.String.Affix", "Affix"};
+inline constexpr token_type backtick{detail::id_string_backtick, detail::id_string, "Token.Literal.String.Backtick",
+                                     "Backtick"};
+inline constexpr token_type char_{detail::id_string_char, detail::id_string, "Token.Literal.String.Char", "Char"};
+inline constexpr token_type delimiter{detail::id_string_delimiter, detail::id_string, "Token.Literal.String.Delimiter",
+                                      "Delimiter"};
+inline constexpr token_type doc{detail::id_string_doc, detail::id_string, "Token.Literal.String.Doc", "Doc"};
+inline constexpr token_type double_{detail::id_string_double, detail::id_string, "Token.Literal.String.Double",
+                                    "Double"};
+inline constexpr token_type escape{detail::id_string_escape, detail::id_string, "Token.Literal.String.Escape",
+                                   "Escape"};
+inline constexpr token_type heredoc{detail::id_string_heredoc, detail::id_string, "Token.Literal.String.Heredoc",
+                                    "Heredoc"};
+inline constexpr token_type interpol{detail::id_string_interpol, detail::id_string, "Token.Literal.String.Interpol",
+                                     "Interpol"};
+inline constexpr token_type other{detail::id_string_other, detail::id_string, "Token.Literal.String.Other", "Other"};
+inline constexpr token_type regex{detail::id_string_regex, detail::id_string, "Token.Literal.String.Regex", "Regex"};
+inline constexpr token_type single{detail::id_string_single, detail::id_string, "Token.Literal.String.Single",
+                                   "Single"};
+inline constexpr token_type symbol{detail::id_string_symbol, detail::id_string, "Token.Literal.String.Symbol",
+                                   "Symbol"};
+} // namespace string
 
-    // Number
-    namespace number {
-        inline constexpr token_type self         {detail::id_number,              detail::id_literal, "Token.Literal.Number", "Number"};
-        inline constexpr token_type bin          {detail::id_number_bin,          detail::id_number,  "Token.Literal.Number.Bin", "Bin"};
-        inline constexpr token_type float_       {detail::id_number_float,        detail::id_number,  "Token.Literal.Number.Float", "Float"};
-        inline constexpr token_type hex          {detail::id_number_hex,          detail::id_number,  "Token.Literal.Number.Hex", "Hex"};
-        inline constexpr token_type integer      {detail::id_number_integer,      detail::id_number,  "Token.Literal.Number.Integer", "Integer"};
-        inline constexpr token_type integer_long {detail::id_number_integer_long, detail::id_number_integer, "Token.Literal.Number.Integer.Long", "Long"};
-        inline constexpr token_type oct          {detail::id_number_oct,          detail::id_number,  "Token.Literal.Number.Oct", "Oct"};
-    }
-}
+// Number
+namespace number {
+inline constexpr token_type self{detail::id_number, detail::id_literal, "Token.Literal.Number", "Number"};
+inline constexpr token_type bin{detail::id_number_bin, detail::id_number, "Token.Literal.Number.Bin", "Bin"};
+inline constexpr token_type float_{detail::id_number_float, detail::id_number, "Token.Literal.Number.Float", "Float"};
+inline constexpr token_type hex{detail::id_number_hex, detail::id_number, "Token.Literal.Number.Hex", "Hex"};
+inline constexpr token_type integer{detail::id_number_integer, detail::id_number, "Token.Literal.Number.Integer",
+                                    "Integer"};
+inline constexpr token_type integer_long{detail::id_number_integer_long, detail::id_number_integer,
+                                         "Token.Literal.Number.Integer.Long", "Long"};
+inline constexpr token_type oct{detail::id_number_oct, detail::id_number, "Token.Literal.Number.Oct", "Oct"};
+} // namespace number
+} // namespace literal
 
 // Operator
 namespace operator_ {
-    inline constexpr token_type self {detail::id_operator,      detail::id_root,     "Token.Operator", "Operator"};
-    inline constexpr token_type word {detail::id_operator_word, detail::id_operator, "Token.Operator.Word", "Word"};
-}
+inline constexpr token_type self{detail::id_operator, detail::id_root, "Token.Operator", "Operator"};
+inline constexpr token_type word{detail::id_operator_word, detail::id_operator, "Token.Operator.Word", "Word"};
+} // namespace operator_
 
 // Punctuation
 namespace punctuation {
-    inline constexpr token_type self   {detail::id_punctuation,        detail::id_root,        "Token.Punctuation", "Punctuation"};
-    inline constexpr token_type marker {detail::id_punctuation_marker, detail::id_punctuation, "Token.Punctuation.Marker", "Marker"};
-}
+inline constexpr token_type self{detail::id_punctuation, detail::id_root, "Token.Punctuation", "Punctuation"};
+inline constexpr token_type marker{detail::id_punctuation_marker, detail::id_punctuation, "Token.Punctuation.Marker",
+                                   "Marker"};
+} // namespace punctuation
 
 // Comment
 namespace comment {
-    inline constexpr token_type self         {detail::id_comment,              detail::id_root,    "Token.Comment", "Comment"};
-    inline constexpr token_type hashbang     {detail::id_comment_hashbang,     detail::id_comment, "Token.Comment.Hashbang", "Hashbang"};
-    inline constexpr token_type multiline    {detail::id_comment_multiline,    detail::id_comment, "Token.Comment.Multiline", "Multiline"};
-    inline constexpr token_type preproc      {detail::id_comment_preproc,      detail::id_comment, "Token.Comment.Preproc", "Preproc"};
-    inline constexpr token_type preproc_file {detail::id_comment_preproc_file, detail::id_comment, "Token.Comment.PreprocFile", "PreprocFile"};
-    inline constexpr token_type single       {detail::id_comment_single,       detail::id_comment, "Token.Comment.Single", "Single"};
-    inline constexpr token_type special      {detail::id_comment_special,      detail::id_comment, "Token.Comment.Special", "Special"};
-}
+inline constexpr token_type self{detail::id_comment, detail::id_root, "Token.Comment", "Comment"};
+inline constexpr token_type hashbang{detail::id_comment_hashbang, detail::id_comment, "Token.Comment.Hashbang",
+                                     "Hashbang"};
+inline constexpr token_type multiline{detail::id_comment_multiline, detail::id_comment, "Token.Comment.Multiline",
+                                      "Multiline"};
+inline constexpr token_type preproc{detail::id_comment_preproc, detail::id_comment, "Token.Comment.Preproc", "Preproc"};
+inline constexpr token_type preproc_file{detail::id_comment_preproc_file, detail::id_comment,
+                                         "Token.Comment.PreprocFile", "PreprocFile"};
+inline constexpr token_type single{detail::id_comment_single, detail::id_comment, "Token.Comment.Single", "Single"};
+inline constexpr token_type special{detail::id_comment_special, detail::id_comment, "Token.Comment.Special", "Special"};
+} // namespace comment
 
 // Generic
 namespace generic {
-    inline constexpr token_type self        {detail::id_generic,             detail::id_root,    "Token.Generic", "Generic"};
-    inline constexpr token_type deleted     {detail::id_generic_deleted,     detail::id_generic, "Token.Generic.Deleted", "Deleted"};
-    inline constexpr token_type emph        {detail::id_generic_emph,        detail::id_generic, "Token.Generic.Emph", "Emph"};
-    inline constexpr token_type error       {detail::id_generic_error,       detail::id_generic, "Token.Generic.Error", "Error"};
-    inline constexpr token_type heading     {detail::id_generic_heading,     detail::id_generic, "Token.Generic.Heading", "Heading"};
-    inline constexpr token_type inserted    {detail::id_generic_inserted,    detail::id_generic, "Token.Generic.Inserted", "Inserted"};
-    inline constexpr token_type output      {detail::id_generic_output,      detail::id_generic, "Token.Generic.Output", "Output"};
-    inline constexpr token_type prompt      {detail::id_generic_prompt,      detail::id_generic, "Token.Generic.Prompt", "Prompt"};
-    inline constexpr token_type strong      {detail::id_generic_strong,      detail::id_generic, "Token.Generic.Strong", "Strong"};
-    inline constexpr token_type strong_emph {detail::id_generic_strong_emph, detail::id_generic, "Token.Generic.StrongEmph", "StrongEmph"};
-    inline constexpr token_type subheading  {detail::id_generic_subheading,  detail::id_generic, "Token.Generic.Subheading", "Subheading"};
-    inline constexpr token_type traceback   {detail::id_generic_traceback,   detail::id_generic, "Token.Generic.Traceback", "Traceback"};
-}
+inline constexpr token_type self{detail::id_generic, detail::id_root, "Token.Generic", "Generic"};
+inline constexpr token_type deleted{detail::id_generic_deleted, detail::id_generic, "Token.Generic.Deleted", "Deleted"};
+inline constexpr token_type emph{detail::id_generic_emph, detail::id_generic, "Token.Generic.Emph", "Emph"};
+inline constexpr token_type error{detail::id_generic_error, detail::id_generic, "Token.Generic.Error", "Error"};
+inline constexpr token_type heading{detail::id_generic_heading, detail::id_generic, "Token.Generic.Heading", "Heading"};
+inline constexpr token_type inserted{detail::id_generic_inserted, detail::id_generic, "Token.Generic.Inserted",
+                                     "Inserted"};
+inline constexpr token_type output{detail::id_generic_output, detail::id_generic, "Token.Generic.Output", "Output"};
+inline constexpr token_type prompt{detail::id_generic_prompt, detail::id_generic, "Token.Generic.Prompt", "Prompt"};
+inline constexpr token_type strong{detail::id_generic_strong, detail::id_generic, "Token.Generic.Strong", "Strong"};
+inline constexpr token_type strong_emph{detail::id_generic_strong_emph, detail::id_generic, "Token.Generic.StrongEmph",
+                                        "StrongEmph"};
+inline constexpr token_type subheading{detail::id_generic_subheading, detail::id_generic, "Token.Generic.Subheading",
+                                       "Subheading"};
+inline constexpr token_type traceback{detail::id_generic_traceback, detail::id_generic, "Token.Generic.Traceback",
+                                      "Traceback"};
+} // namespace generic
 
-}  // namespace token
+} // namespace token
 
 // ── Global token table ─────────────────────────────────────────────────
 
@@ -310,7 +332,11 @@ inline constexpr std::array<token_type, token_count> token_table = {{
     token::error,
     token::other,
     // 5-9: padding
-    {5, 0, "", ""}, {6, 0, "", ""}, {7, 0, "", ""}, {8, 0, "", ""}, {9, 0, "", ""},
+    {5, 0, "", ""},
+    {6, 0, "", ""},
+    {7, 0, "", ""},
+    {8, 0, "", ""},
+    {9, 0, "", ""},
     // 10-16: keyword
     token::keyword::self,
     token::keyword::constant,
@@ -320,7 +346,9 @@ inline constexpr std::array<token_type, token_count> token_table = {{
     token::keyword::reserved,
     token::keyword::type,
     // 17-19: padding
-    {17, 0, "", ""}, {18, 0, "", ""}, {19, 0, "", ""},
+    {17, 0, "", ""},
+    {18, 0, "", ""},
+    {19, 0, "", ""},
     // 20-40: name
     token::name::self,
     token::name::attribute,
@@ -344,8 +372,15 @@ inline constexpr std::array<token_type, token_count> token_table = {{
     token::name::variable_instance,
     token::name::variable_magic,
     // 41-49: padding
-    {41, 0, "", ""}, {42, 0, "", ""}, {43, 0, "", ""}, {44, 0, "", ""},
-    {45, 0, "", ""}, {46, 0, "", ""}, {47, 0, "", ""}, {48, 0, "", ""}, {49, 0, "", ""},
+    {41, 0, "", ""},
+    {42, 0, "", ""},
+    {43, 0, "", ""},
+    {44, 0, "", ""},
+    {45, 0, "", ""},
+    {46, 0, "", ""},
+    {47, 0, "", ""},
+    {48, 0, "", ""},
+    {49, 0, "", ""},
     // 50-72: literal
     token::literal::self,
     token::literal::date,
@@ -371,18 +406,27 @@ inline constexpr std::array<token_type, token_count> token_table = {{
     token::literal::number::integer_long,
     token::literal::number::oct,
     // 73-79: padding
-    {73, 0, "", ""}, {74, 0, "", ""}, {75, 0, "", ""}, {76, 0, "", ""},
-    {77, 0, "", ""}, {78, 0, "", ""}, {79, 0, "", ""},
+    {73, 0, "", ""},
+    {74, 0, "", ""},
+    {75, 0, "", ""},
+    {76, 0, "", ""},
+    {77, 0, "", ""},
+    {78, 0, "", ""},
+    {79, 0, "", ""},
     // 80-81: operator
     token::operator_::self,
     token::operator_::word,
     // 82-84: padding
-    {82, 0, "", ""}, {83, 0, "", ""}, {84, 0, "", ""},
+    {82, 0, "", ""},
+    {83, 0, "", ""},
+    {84, 0, "", ""},
     // 85-86: punctuation
     token::punctuation::self,
     token::punctuation::marker,
     // 87-89: padding
-    {87, 0, "", ""}, {88, 0, "", ""}, {89, 0, "", ""},
+    {87, 0, "", ""},
+    {88, 0, "", ""},
+    {89, 0, "", ""},
     // 90-96: comment
     token::comment::self,
     token::comment::hashbang,
@@ -392,7 +436,9 @@ inline constexpr std::array<token_type, token_count> token_table = {{
     token::comment::single,
     token::comment::special,
     // 97-99: padding
-    {97, 0, "", ""}, {98, 0, "", ""}, {99, 0, "", ""},
+    {97, 0, "", ""},
+    {98, 0, "", ""},
+    {99, 0, "", ""},
     // 100-111: generic
     token::generic::self,
     token::generic::deleted,
@@ -408,7 +454,7 @@ inline constexpr std::array<token_type, token_count> token_table = {{
     token::generic::traceback,
 }};
 
-}  // namespace detail
+} // namespace detail
 
 // ── is_child_of implementation ─────────────────────────────────────────
 
@@ -419,7 +465,7 @@ constexpr bool token_type::is_child_of(token_type other) const noexcept {
         if (cur >= detail::token_count) return false;
         uint32_t pid = detail::token_table[cur].parent_id;
         if (pid == other.id) return true;
-        if (pid == cur) return false;  // reached root
+        if (pid == cur) return false; // reached root
         cur = pid;
     }
     return false;
@@ -433,54 +479,96 @@ inline constexpr uint32_t valid_token_count = 79;
 
 inline constexpr std::array<token_type, valid_token_count> all_tokens = {{
     token::root,
-    token::text, token::whitespace, token::error, token::other,
+    token::text,
+    token::whitespace,
+    token::error,
+    token::other,
     // keyword
     token::keyword::self,
-    token::keyword::constant, token::keyword::declaration, token::keyword::namespace_,
-    token::keyword::pseudo, token::keyword::reserved, token::keyword::type,
+    token::keyword::constant,
+    token::keyword::declaration,
+    token::keyword::namespace_,
+    token::keyword::pseudo,
+    token::keyword::reserved,
+    token::keyword::type,
     // name
     token::name::self,
-    token::name::attribute, token::name::builtin, token::name::builtin_pseudo,
-    token::name::class_, token::name::constant, token::name::decorator,
-    token::name::entity, token::name::exception, token::name::function,
-    token::name::function_magic, token::name::label, token::name::namespace_,
-    token::name::other, token::name::property, token::name::tag,
-    token::name::variable, token::name::variable_class, token::name::variable_global,
-    token::name::variable_instance, token::name::variable_magic,
+    token::name::attribute,
+    token::name::builtin,
+    token::name::builtin_pseudo,
+    token::name::class_,
+    token::name::constant,
+    token::name::decorator,
+    token::name::entity,
+    token::name::exception,
+    token::name::function,
+    token::name::function_magic,
+    token::name::label,
+    token::name::namespace_,
+    token::name::other,
+    token::name::property,
+    token::name::tag,
+    token::name::variable,
+    token::name::variable_class,
+    token::name::variable_global,
+    token::name::variable_instance,
+    token::name::variable_magic,
     // literal
-    token::literal::self, token::literal::date,
+    token::literal::self,
+    token::literal::date,
     // string
     token::literal::string::self,
-    token::literal::string::affix, token::literal::string::backtick,
-    token::literal::string::char_, token::literal::string::delimiter,
-    token::literal::string::doc, token::literal::string::double_,
-    token::literal::string::escape, token::literal::string::heredoc,
-    token::literal::string::interpol, token::literal::string::other,
-    token::literal::string::regex, token::literal::string::single,
+    token::literal::string::affix,
+    token::literal::string::backtick,
+    token::literal::string::char_,
+    token::literal::string::delimiter,
+    token::literal::string::doc,
+    token::literal::string::double_,
+    token::literal::string::escape,
+    token::literal::string::heredoc,
+    token::literal::string::interpol,
+    token::literal::string::other,
+    token::literal::string::regex,
+    token::literal::string::single,
     token::literal::string::symbol,
     // number
     token::literal::number::self,
-    token::literal::number::bin, token::literal::number::float_,
-    token::literal::number::hex, token::literal::number::integer,
-    token::literal::number::integer_long, token::literal::number::oct,
+    token::literal::number::bin,
+    token::literal::number::float_,
+    token::literal::number::hex,
+    token::literal::number::integer,
+    token::literal::number::integer_long,
+    token::literal::number::oct,
     // operator
-    token::operator_::self, token::operator_::word,
+    token::operator_::self,
+    token::operator_::word,
     // punctuation
-    token::punctuation::self, token::punctuation::marker,
+    token::punctuation::self,
+    token::punctuation::marker,
     // comment
     token::comment::self,
-    token::comment::hashbang, token::comment::multiline,
-    token::comment::preproc, token::comment::preproc_file,
-    token::comment::single, token::comment::special,
+    token::comment::hashbang,
+    token::comment::multiline,
+    token::comment::preproc,
+    token::comment::preproc_file,
+    token::comment::single,
+    token::comment::special,
     // generic
     token::generic::self,
-    token::generic::deleted, token::generic::emph, token::generic::error,
-    token::generic::heading, token::generic::inserted, token::generic::output,
-    token::generic::prompt, token::generic::strong, token::generic::strong_emph,
-    token::generic::subheading, token::generic::traceback,
+    token::generic::deleted,
+    token::generic::emph,
+    token::generic::error,
+    token::generic::heading,
+    token::generic::inserted,
+    token::generic::output,
+    token::generic::prompt,
+    token::generic::strong,
+    token::generic::strong_emph,
+    token::generic::subheading,
+    token::generic::traceback,
 }};
 
-}  // namespace detail
+} // namespace detail
 
 // ── token_from_string ──────────────────────────────────────────────────
 
@@ -492,7 +580,7 @@ inline constexpr std::array<token_type, valid_token_count> all_tokens = {{
  *
  * Returns token::root if not found.
  */
-constexpr token_type token_from_string(const char* name) noexcept {
+constexpr token_type token_from_string(const char *name) noexcept {
     for (uint32_t i = 0; i < detail::valid_token_count; ++i) {
         if (detail::str_eq(detail::all_tokens[i].name, name)) {
             return detail::all_tokens[i];
@@ -501,4 +589,4 @@ constexpr token_type token_from_string(const char* name) noexcept {
     return token::root;
 }
 
-}  // namespace spearmint
+} // namespace spearmint

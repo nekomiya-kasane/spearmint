@@ -3,17 +3,17 @@
 namespace spearmint::lexers {
 
 namespace {
-constexpr const char* aliases[] = {"lua"};
-constexpr const char* filenames[] = {"*.lua"};
-constexpr const char* mimes[] = {"text/x-lua", "application/x-lua"};
+constexpr const char *aliases[] = {"lua"};
+constexpr const char *filenames[] = {"*.lua"};
+constexpr const char *mimes[] = {"text/x-lua", "application/x-lua"};
 const lexer_info lua_info = {
-    "lua", "Lua",
-    {aliases}, {filenames}, {mimes},
-    "https://www.lua.org", 10,
+    "lua", "Lua", {aliases}, {filenames}, {mimes}, "https://www.lua.org", 10,
 };
-}
+} // namespace
 
-const lexer_info& lua_lexer::info() const noexcept { return lua_info; }
+const lexer_info &lua_lexer::info() const noexcept {
+    return lua_info;
+}
 
 float lua_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
@@ -32,8 +32,10 @@ state_map lua_lexer::get_rules() const {
         {R"(\s+)", tk::whitespace, state_action::none()},
         {R"(--\[\[)", tk::comment::multiline, state_action::push_state("mlcomment")},
         {R"(--[^\n]*)", tk::comment::single, state_action::none()},
-        {R"(\b(and|break|do|else|elseif|end|false|for|function|goto|if|in|local|nil|not|or|repeat|return|then|true|until|while)\b)", tk::keyword::self, state_action::none()},
-        {R"(\b(assert|collectgarbage|dofile|error|getmetatable|ipairs|load|loadfile|next|pairs|pcall|print|rawequal|rawget|rawlen|rawset|require|select|setmetatable|tonumber|tostring|type|xpcall|coroutine|debug|io|math|os|package|string|table|utf8)\b)", tk::name::builtin, state_action::none()},
+        {R"(\b(and|break|do|else|elseif|end|false|for|function|goto|if|in|local|nil|not|or|repeat|return|then|true|until|while)\b)",
+         tk::keyword::self, state_action::none()},
+        {R"(\b(assert|collectgarbage|dofile|error|getmetatable|ipairs|load|loadfile|next|pairs|pcall|print|rawequal|rawget|rawlen|rawset|require|select|setmetatable|tonumber|tostring|type|xpcall|coroutine|debug|io|math|os|package|string|table|utf8)\b)",
+         tk::name::builtin, state_action::none()},
         {R"(0x[0-9a-fA-F]+(\.[0-9a-fA-F]+)?([pP][+-]?[0-9]+)?)", tk::literal::number::hex, state_action::none()},
         {R"([0-9]+\.[0-9]*([eE][+-]?[0-9]+)?)", tk::literal::number::float_, state_action::none()},
         {R"(\.[0-9]+([eE][+-]?[0-9]+)?)", tk::literal::number::float_, state_action::none()},
@@ -75,9 +77,7 @@ state_map lua_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_lua_lexer() {
-    register_lexer([]() -> std::unique_ptr<lexer> {
-        return std::make_unique<lua_lexer>();
-    }, lua_info);
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<lua_lexer>(); }, lua_info);
 }
 
-}
+} // namespace spearmint::lexers

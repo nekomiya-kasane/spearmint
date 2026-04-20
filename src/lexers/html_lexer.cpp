@@ -3,17 +3,17 @@
 namespace spearmint::lexers {
 
 namespace {
-constexpr const char* aliases[] = {"html", "htm"};
-constexpr const char* filenames[] = {"*.html", "*.htm", "*.xhtml"};
-constexpr const char* mimes[] = {"text/html"};
+constexpr const char *aliases[] = {"html", "htm"};
+constexpr const char *filenames[] = {"*.html", "*.htm", "*.xhtml"};
+constexpr const char *mimes[] = {"text/html"};
 const lexer_info html_info = {
-    "html", "HTML",
-    {aliases}, {filenames}, {mimes},
-    "https://html.spec.whatwg.org", 10,
+    "html", "HTML", {aliases}, {filenames}, {mimes}, "https://html.spec.whatwg.org", 10,
 };
-}
+} // namespace
 
-const lexer_info& html_lexer::info() const noexcept { return html_info; }
+const lexer_info &html_lexer::info() const noexcept {
+    return html_info;
+}
 
 float html_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
@@ -83,9 +83,7 @@ state_map html_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_html_lexer() {
-    register_lexer([]() -> std::unique_ptr<lexer> {
-        return std::make_unique<html_lexer>();
-    }, html_info);
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<html_lexer>(); }, html_info);
 }
 
-}
+} // namespace spearmint::lexers

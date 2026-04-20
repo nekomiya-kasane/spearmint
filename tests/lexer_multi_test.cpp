@@ -1,11 +1,11 @@
-#include <gtest/gtest.h>
-
+#include "spearmint/core/lexer_registry.h"
 #include "spearmint/core/token.h"
 #include "spearmint/core/token_stream.h"
-#include "spearmint/core/lexer_registry.h"
 #include "spearmint/lexers/cpp.h"
-#include "spearmint/lexers/json.h"
 #include "spearmint/lexers/javascript.h"
+#include "spearmint/lexers/json.h"
+
+#include <gtest/gtest.h>
 
 using namespace spearmint;
 
@@ -22,7 +22,7 @@ TEST(CppLexerTest, Keywords) {
     auto result = lex.tokenize("#include <iostream>\nint main() { return 0; }\n");
 
     bool found_int = false, found_return = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "int" && e.type == token::keyword::self) found_int = true;
         if (e.text == "return" && e.type == token::keyword::self) found_return = true;
     }
@@ -35,7 +35,7 @@ TEST(CppLexerTest, Preprocessor) {
     auto result = lex.tokenize("#include <vector>\n");
 
     bool found_preproc = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.type == token::comment::preproc) found_preproc = true;
     }
     EXPECT_TRUE(found_preproc);
@@ -46,7 +46,7 @@ TEST(CppLexerTest, Comments) {
     auto result = lex.tokenize("// single\n/* multi */\n");
 
     bool found_single = false, found_multi = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.type == token::comment::single) found_single = true;
         if (e.type == token::comment::multiline) found_multi = true;
     }
@@ -59,10 +59,19 @@ TEST(CppLexerTest, Numbers) {
     auto result = lex.tokenize("int a = 0xFF; double b = 3.14; int c = 0b1010;\n");
 
     bool found_hex = false, found_float = false, found_bin = false;
-    for (const auto& e : result) {
-        if (e.text == "0xFF") { EXPECT_EQ(e.type, token::literal::number::hex); found_hex = true; }
-        if (e.text == "3.14") { EXPECT_EQ(e.type, token::literal::number::float_); found_float = true; }
-        if (e.text == "0b1010") { EXPECT_EQ(e.type, token::literal::number::bin); found_bin = true; }
+    for (const auto &e : result) {
+        if (e.text == "0xFF") {
+            EXPECT_EQ(e.type, token::literal::number::hex);
+            found_hex = true;
+        }
+        if (e.text == "3.14") {
+            EXPECT_EQ(e.type, token::literal::number::float_);
+            found_float = true;
+        }
+        if (e.text == "0b1010") {
+            EXPECT_EQ(e.type, token::literal::number::bin);
+            found_bin = true;
+        }
     }
     EXPECT_TRUE(found_hex);
     EXPECT_TRUE(found_float);
@@ -74,7 +83,7 @@ TEST(CppLexerTest, Strings) {
     auto result = lex.tokenize("auto s = \"hello\";\n");
 
     bool found_str = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "hello" && e.type == token::literal::string::double_) found_str = true;
     }
     EXPECT_TRUE(found_str);
@@ -91,7 +100,7 @@ TEST(CppLexerTest, Lossless) {
     std::string_view src = "int x = 42;\n";
     auto result = lex.tokenize(src);
     std::string reconstructed;
-    for (const auto& e : result) reconstructed.append(e.text);
+    for (const auto &e : result) reconstructed.append(e.text);
     EXPECT_EQ(reconstructed, src);
 }
 
@@ -107,7 +116,7 @@ TEST(JsonLexerTest, BasicObject) {
     auto result = lex.tokenize(R"({"key": "value", "num": 42, "flag": true})");
 
     bool found_str = false, found_int = false, found_bool = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "key" && e.type == token::literal::string::double_) found_str = true;
         if (e.text == "42" && e.type == token::literal::number::integer) found_int = true;
         if (e.text == "true" && e.type == token::keyword::constant) found_bool = true;
@@ -122,7 +131,7 @@ TEST(JsonLexerTest, FloatAndNull) {
     auto result = lex.tokenize(R"({"pi": 3.14, "empty": null})");
 
     bool found_float = false, found_null = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "3.14" && e.type == token::literal::number::float_) found_float = true;
         if (e.text == "null" && e.type == token::keyword::constant) found_null = true;
     }
@@ -135,7 +144,7 @@ TEST(JsonLexerTest, EscapeSequences) {
     auto result = lex.tokenize(R"({"msg": "hello\nworld"})");
 
     bool found_escape = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.type == token::literal::string::escape) found_escape = true;
     }
     EXPECT_TRUE(found_escape);
@@ -146,7 +155,7 @@ TEST(JsonLexerTest, Lossless) {
     std::string_view src = "{\"a\": 1}\n";
     auto result = lex.tokenize(src);
     std::string reconstructed;
-    for (const auto& e : result) reconstructed.append(e.text);
+    for (const auto &e : result) reconstructed.append(e.text);
     EXPECT_EQ(reconstructed, src);
 }
 
@@ -162,7 +171,7 @@ TEST(JsLexerTest, Keywords) {
     auto result = lex.tokenize("const x = 42;\nlet y = 'hello';\n");
 
     bool found_const = false, found_let = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "const" && e.type == token::keyword::self) found_const = true;
         if (e.text == "let" && e.type == token::keyword::self) found_let = true;
     }
@@ -175,7 +184,7 @@ TEST(JsLexerTest, ArrowFunction) {
     auto result = lex.tokenize("const f = (x) => x * 2;\n");
 
     bool found_arrow = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "=>" && e.type == token::operator_::self) found_arrow = true;
     }
     EXPECT_TRUE(found_arrow);
@@ -186,7 +195,7 @@ TEST(JsLexerTest, TemplateLiteral) {
     auto result = lex.tokenize("const s = `hello ${name}`;\n");
 
     bool found_backtick = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.type == token::literal::string::backtick) found_backtick = true;
     }
     EXPECT_TRUE(found_backtick);
@@ -197,7 +206,7 @@ TEST(JsLexerTest, Comments) {
     auto result = lex.tokenize("// line\n/* block */\n");
 
     bool found_single = false, found_multi = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.type == token::comment::single) found_single = true;
         if (e.type == token::comment::multiline) found_multi = true;
     }
@@ -210,7 +219,7 @@ TEST(JsLexerTest, BuiltinObjects) {
     auto result = lex.tokenize("console.log(JSON.stringify(obj));\n");
 
     bool found_console = false, found_json = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "console" && e.type == token::name::builtin) found_console = true;
         if (e.text == "JSON" && e.type == token::name::builtin) found_json = true;
     }
@@ -229,14 +238,14 @@ TEST(JsLexerTest, Lossless) {
     std::string_view src = "let x = 1;\n";
     auto result = lex.tokenize(src);
     std::string reconstructed;
-    for (const auto& e : result) reconstructed.append(e.text);
+    for (const auto &e : result) reconstructed.append(e.text);
     EXPECT_EQ(reconstructed, src);
 }
 
 // ── Registry with all lexers ───────────────────────────────────────────
 
 class MultiLexerRegistryTest : public ::testing::Test {
-protected:
+  protected:
     void SetUp() override {
         lexers::register_cpp_lexer();
         lexers::register_json_lexer();

@@ -22,65 +22,63 @@
 #include <string_view>
 
 // spearmint
-#include "spearmint/core/token.h"
-#include "spearmint/core/token_stream.h"
-#include "spearmint/core/style.h"
-#include "spearmint/core/style_registry.h"
 #include "spearmint/core/lexer.h"
 #include "spearmint/core/lexer_registry.h"
-#include "spearmint/lexers/python.h"
-#include "spearmint/lexers/cpp.h"
-#include "spearmint/lexers/json.h"
-#include "spearmint/lexers/javascript.h"
-#include "spearmint/lexers/rust.h"
-#include "spearmint/lexers/go.h"
-#include "spearmint/lexers/typescript.h"
-#include "spearmint/lexers/java.h"
-#include "spearmint/lexers/csharp.h"
-#include "spearmint/lexers/ruby.h"
-#include "spearmint/lexers/css.h"
-#include "spearmint/lexers/html.h"
-#include "spearmint/lexers/yaml.h"
-#include "spearmint/lexers/toml.h"
+#include "spearmint/core/style.h"
+#include "spearmint/core/style_registry.h"
+#include "spearmint/core/token.h"
+#include "spearmint/core/token_stream.h"
 #include "spearmint/lexers/bash.h"
-#include "spearmint/lexers/sql.h"
-#include "spearmint/lexers/xml.h"
-#include "spearmint/lexers/markdown.h"
-#include "spearmint/lexers/lua.h"
-#include "spearmint/lexers/php.h"
-#include "spearmint/lexers/kotlin.h"
-#include "spearmint/lexers/swift.h"
+#include "spearmint/lexers/cpp.h"
+#include "spearmint/lexers/csharp.h"
+#include "spearmint/lexers/css.h"
 #include "spearmint/lexers/dockerfile.h"
-#include "spearmint/lexers/makefile.h"
+#include "spearmint/lexers/go.h"
+#include "spearmint/lexers/html.h"
 #include "spearmint/lexers/ini.h"
+#include "spearmint/lexers/java.h"
+#include "spearmint/lexers/javascript.h"
+#include "spearmint/lexers/json.h"
+#include "spearmint/lexers/kotlin.h"
+#include "spearmint/lexers/lua.h"
+#include "spearmint/lexers/makefile.h"
+#include "spearmint/lexers/markdown.h"
+#include "spearmint/lexers/php.h"
+#include "spearmint/lexers/python.h"
+#include "spearmint/lexers/ruby.h"
+#include "spearmint/lexers/rust.h"
+#include "spearmint/lexers/sql.h"
+#include "spearmint/lexers/swift.h"
+#include "spearmint/lexers/toml.h"
+#include "spearmint/lexers/typescript.h"
+#include "spearmint/lexers/xml.h"
+#include "spearmint/lexers/yaml.h"
 #include "spearmint/styles/builtin.h"
 
 // tapiru
-#include "tapiru/core/console.h"
 #include "tapiru/core/ansi.h"
+#include "tapiru/core/console.h"
 #include "tapiru/core/style.h"
 #include "tapiru/core/terminal.h"
 
 // ── Bridge: spearmint style_rule → tapiru style ─────────────────────────
 
-static tapiru::style to_tapiru_style(const spearmint::style_rule& rule) {
+static tapiru::style to_tapiru_style(const spearmint::style_rule &rule) {
     tapiru::style s;
     if (rule.has_fg) {
-        s.fg = tapiru::color::from_rgb(
-            static_cast<uint8_t>((rule.fg >> 16) & 0xFF),
-            static_cast<uint8_t>((rule.fg >> 8) & 0xFF),
-            static_cast<uint8_t>(rule.fg & 0xFF));
+        s.fg =
+            tapiru::color::from_rgb(static_cast<uint8_t>((rule.fg >> 16) & 0xFF),
+                                    static_cast<uint8_t>((rule.fg >> 8) & 0xFF), static_cast<uint8_t>(rule.fg & 0xFF));
     }
     if (rule.has_bg) {
-        s.bg = tapiru::color::from_rgb(
-            static_cast<uint8_t>((rule.bg >> 16) & 0xFF),
-            static_cast<uint8_t>((rule.bg >> 8) & 0xFF),
-            static_cast<uint8_t>(rule.bg & 0xFF));
+        s.bg =
+            tapiru::color::from_rgb(static_cast<uint8_t>((rule.bg >> 16) & 0xFF),
+                                    static_cast<uint8_t>((rule.bg >> 8) & 0xFF), static_cast<uint8_t>(rule.bg & 0xFF));
     }
-    if (rule.bold)      s.attrs |= tapiru::attr::bold;
-    if (rule.italic)    s.attrs |= tapiru::attr::italic;
+    if (rule.bold) s.attrs |= tapiru::attr::bold;
+    if (rule.italic) s.attrs |= tapiru::attr::italic;
     if (rule.underline) s.attrs |= tapiru::attr::underline;
-    if (rule.strike)    s.attrs |= tapiru::attr::strike;
+    if (rule.strike) s.attrs |= tapiru::attr::strike;
     return s;
 }
 
@@ -114,7 +112,7 @@ static void register_all_lexers() {
     spearmint::lexers::register_ini_lexer();
 }
 
-static std::string read_file(const char* path) {
+static std::string read_file(const char *path) {
     std::ifstream f(path, std::ios::binary);
     if (!f) return {};
     std::ostringstream ss;
@@ -122,32 +120,32 @@ static std::string read_file(const char* path) {
     return ss.str();
 }
 
-static std::string basename(const char* path) {
+static std::string basename(const char *path) {
     std::string_view sv(path);
     auto pos = sv.find_last_of("/\\");
     if (pos != std::string_view::npos) sv = sv.substr(pos + 1);
     return std::string(sv);
 }
 
-static void print_usage(const char* prog) {
+static void print_usage(const char *prog) {
     std::fprintf(stderr,
-        "Usage: %s <file> [options]\n"
-        "\n"
-        "Options:\n"
-        "  --style <name>   Style name (default: monokai)\n"
-        "  --lines          Show line numbers\n"
-        "  --plain          No colors (plain text)\n"
-        "  --list-styles    List available styles\n"
-        "  --list-langs     List available languages\n"
-        "  --help           Show this help\n",
-        prog);
+                 "Usage: %s <file> [options]\n"
+                 "\n"
+                 "Options:\n"
+                 "  --style <name>   Style name (default: monokai)\n"
+                 "  --lines          Show line numbers\n"
+                 "  --plain          No colors (plain text)\n"
+                 "  --list-styles    List available styles\n"
+                 "  --list-langs     List available languages\n"
+                 "  --help           Show this help\n",
+                 prog);
 }
 
 // ── Main ────────────────────────────────────────────────────────────────
 
-int main(int argc, char* argv[]) {
-    const char* filepath = nullptr;
-    const char* style_name = "monokai";
+int main(int argc, char *argv[]) {
+    const char *filepath = nullptr;
+    const char *style_name = "monokai";
     bool show_lines = false;
     bool plain = false;
     bool list_styles = false;
@@ -183,8 +181,8 @@ int main(int argc, char* argv[]) {
         tapiru::console con;
         con.print("[bold cyan]Available styles:[/]");
         auto all = spearmint::get_all_styles();
-        for (const auto& name : all) {
-            auto* sty = spearmint::get_style(name);
+        for (const auto &name : all) {
+            auto *sty = spearmint::get_style(name);
             std::string line = "  [dim]\u2022[/] ";
             if (sty) {
                 line += sty->display_name;
@@ -203,7 +201,7 @@ int main(int argc, char* argv[]) {
         tapiru::console con;
         con.print("[bold cyan]Available languages:[/]");
         auto all = spearmint::get_all_lexers();
-        for (const auto* info : all) {
+        for (const auto *info : all) {
             std::string line = "  [dim]\u2022[/] [bold]";
             line += info->display_name;
             line += "[/] [dim](";
@@ -272,8 +270,8 @@ int main(int argc, char* argv[]) {
 
         // Separator line (bypass markup parser — write ANSI directly)
         auto tw = con.term_width();
-        std::string sep_line = "\033[2m";  // dim
-        for (uint32_t i = 0; i < (tw > 0 ? tw : 80); ++i) sep_line += "\xe2\x94\x80";  // U+2500 ─
+        std::string sep_line = "\033[2m";                                             // dim
+        for (uint32_t i = 0; i < (tw > 0 ? tw : 80); ++i) sep_line += "\xe2\x94\x80"; // U+2500 ─
         sep_line += "\033[0m\n";
         con.write(sep_line);
     }
@@ -291,13 +289,12 @@ int main(int argc, char* argv[]) {
         // Background style for the whole output
         tapiru::style bg_style;
         if (style_ptr->has_background) {
-            bg_style.bg = tapiru::color::from_rgb(
-                static_cast<uint8_t>((style_ptr->background_color >> 16) & 0xFF),
-                static_cast<uint8_t>((style_ptr->background_color >> 8) & 0xFF),
-                static_cast<uint8_t>(style_ptr->background_color & 0xFF));
+            bg_style.bg = tapiru::color::from_rgb(static_cast<uint8_t>((style_ptr->background_color >> 16) & 0xFF),
+                                                  static_cast<uint8_t>((style_ptr->background_color >> 8) & 0xFF),
+                                                  static_cast<uint8_t>(style_ptr->background_color & 0xFF));
         }
 
-        for (const auto& entry : result.tokens) {
+        for (const auto &entry : result.tokens) {
             // Emit line numbers at line start
             if (show_lines && at_line_start) {
                 tapiru::style ln_style;
@@ -312,7 +309,7 @@ int main(int argc, char* argv[]) {
             }
 
             // Look up style for this token
-            const auto* rule = style_ptr->lookup(entry.type);
+            const auto *rule = style_ptr->lookup(entry.type);
             tapiru::style token_style = bg_style;
             if (rule) {
                 auto ts = to_tapiru_style(*rule);

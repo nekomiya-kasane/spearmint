@@ -1,11 +1,5 @@
-#include <gtest/gtest.h>
-
-#include <string>
-#include <string_view>
-
-#include "spearmint/core/token.h"
 #include "spearmint/core/lexer_registry.h"
-
+#include "spearmint/core/token.h"
 #include "spearmint/lexers/bash.h"
 #include "spearmint/lexers/csharp.h"
 #include "spearmint/lexers/css.h"
@@ -28,6 +22,10 @@
 #include "spearmint/lexers/xml.h"
 #include "spearmint/lexers/yaml.h"
 
+#include <gtest/gtest.h>
+#include <string>
+#include <string_view>
+
 using namespace spearmint;
 
 // ── Bash ─────────────────────────────────────────────────────────────────
@@ -46,7 +44,7 @@ TEST(BashLexerTest, Tokenize) {
     ASSERT_GT(result.size(), 3u);
 
     bool found_keyword = false, found_builtin = false, found_var = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "if" && e.type == token::keyword::self) found_keyword = true;
         if (e.text == "echo" && e.type == token::name::builtin) found_builtin = true;
         if (e.text == "$USER" && e.type == token::name::variable) found_var = true;
@@ -67,7 +65,7 @@ TEST(BashLexerTest, Lossless) {
     std::string_view src = "echo hello\n";
     auto result = lex.tokenize(src);
     std::string reconstructed;
-    for (const auto& e : result) reconstructed.append(e.text);
+    for (const auto &e : result) reconstructed.append(e.text);
     EXPECT_EQ(reconstructed, src);
 }
 
@@ -87,11 +85,12 @@ TEST(CSharpLexerTest, Info) {
 
 TEST(CSharpLexerTest, Tokenize) {
     lexers::csharp_lexer lex;
-    auto result = lex.tokenize("using System;\nclass Program {\n    static void Main() { Console.WriteLine(\"hello\"); }\n}\n");
+    auto result =
+        lex.tokenize("using System;\nclass Program {\n    static void Main() { Console.WriteLine(\"hello\"); }\n}\n");
     ASSERT_GT(result.size(), 3u);
 
     bool found_class = false, found_string = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "class" && e.type == token::keyword::self) found_class = true;
         if (e.text == "hello" && e.type == token::literal::string::double_) found_string = true;
     }
@@ -124,7 +123,7 @@ TEST(CssLexerTest, Tokenize) {
     ASSERT_GT(result.size(), 3u);
 
     bool found_selector = false, found_value = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "body") found_selector = true;
         if (e.text == "red" || e.text == "14px") found_value = true;
     }
@@ -155,7 +154,7 @@ TEST(DockerfileLexerTest, Tokenize) {
     try {
         auto result = lex.tokenize("FROM ubuntu:22.04\nRUN apt-get update\nCOPY . /app\n");
         EXPECT_GT(result.size(), 0u);
-    } catch (const std::regex_error&) {
+    } catch (const std::regex_error &) {
         GTEST_SKIP() << "Dockerfile lexer has a regex_error in its rules";
     }
 }
@@ -184,7 +183,7 @@ TEST(GoLexerTest, Tokenize) {
     ASSERT_GT(result.size(), 3u);
 
     bool found_package = false, found_func = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "package" && e.type == token::keyword::self) found_package = true;
         if (e.text == "func" && e.type == token::keyword::self) found_func = true;
     }
@@ -217,7 +216,7 @@ TEST(HtmlLexerTest, Tokenize) {
 
     // Verify lossless tokenization
     std::string reconstructed;
-    for (const auto& e : result) reconstructed.append(e.text);
+    for (const auto &e : result) reconstructed.append(e.text);
     EXPECT_EQ(reconstructed, "<!DOCTYPE html>\n<html>\n<body><h1>Hello</h1></body>\n</html>\n");
 }
 
@@ -246,7 +245,7 @@ TEST(IniLexerTest, Tokenize) {
 
     // Verify lossless tokenization
     std::string reconstructed;
-    for (const auto& e : result) reconstructed.append(e.text);
+    for (const auto &e : result) reconstructed.append(e.text);
     EXPECT_EQ(reconstructed, "[section]\nkey = value\n# comment\n");
 }
 
@@ -265,11 +264,12 @@ TEST(JavaLexerTest, Info) {
 
 TEST(JavaLexerTest, Tokenize) {
     lexers::java_lexer lex;
-    auto result = lex.tokenize("public class Main {\n    public static void main(String[] args) {\n        System.out.println(\"hello\");\n    }\n}\n");
+    auto result = lex.tokenize("public class Main {\n    public static void main(String[] args) {\n        "
+                               "System.out.println(\"hello\");\n    }\n}\n");
     ASSERT_GT(result.size(), 3u);
 
     bool found_class = false, found_public = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "class" && e.type == token::keyword::self) found_class = true;
         if (e.text == "public" && e.type == token::keyword::self) found_public = true;
     }
@@ -301,7 +301,7 @@ TEST(KotlinLexerTest, Tokenize) {
     ASSERT_GT(result.size(), 3u);
 
     bool found_fun = false, found_val = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "fun" && e.type == token::keyword::self) found_fun = true;
         if (e.text == "val" && e.type == token::keyword::self) found_val = true;
     }
@@ -328,7 +328,7 @@ TEST(LuaLexerTest, Tokenize) {
     ASSERT_GT(result.size(), 3u);
 
     bool found_local = false, found_function = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "local" && e.type == token::keyword::self) found_local = true;
         if (e.text == "function" && e.type == token::keyword::self) found_function = true;
     }
@@ -355,7 +355,7 @@ TEST(MakefileLexerTest, Tokenize) {
     ASSERT_GT(result.size(), 3u);
 
     bool found_var = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text.find("CC") != std::string_view::npos) found_var = true;
     }
     EXPECT_TRUE(found_var);
@@ -399,7 +399,7 @@ TEST(PhpLexerTest, Tokenize) {
     ASSERT_GT(result.size(), 3u);
 
     bool found_var = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "$name" && e.type == token::name::variable) found_var = true;
     }
     EXPECT_TRUE(found_var);
@@ -424,7 +424,7 @@ TEST(RubyLexerTest, Tokenize) {
     ASSERT_GT(result.size(), 3u);
 
     bool found_def = false, found_end = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "def" && e.type == token::keyword::self) found_def = true;
         if (e.text == "end" && e.type == token::keyword::self) found_end = true;
     }
@@ -451,7 +451,7 @@ TEST(RustLexerTest, Tokenize) {
     ASSERT_GT(result.size(), 3u);
 
     bool found_fn = false, found_let = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "fn" && e.type == token::keyword::self) found_fn = true;
         if (e.text == "let" && e.type == token::keyword::self) found_let = true;
     }
@@ -483,7 +483,7 @@ TEST(SqlLexerTest, Tokenize) {
     try {
         auto result = lex.tokenize("SELECT 1;\n");
         EXPECT_GT(result.size(), 0u);
-    } catch (const std::regex_error&) {
+    } catch (const std::regex_error &) {
         // Known regex_error in SQL lexer rules — still exercises info() and get_rules()
         GTEST_SKIP() << "SQL lexer has a regex_error in its rules";
     }
@@ -504,11 +504,12 @@ TEST(SwiftLexerTest, Info) {
 
 TEST(SwiftLexerTest, Tokenize) {
     lexers::swift_lexer lex;
-    auto result = lex.tokenize("import Foundation\nfunc greet(_ name: String) -> String {\n    return \"hello \\(name)\"\n}\n");
+    auto result =
+        lex.tokenize("import Foundation\nfunc greet(_ name: String) -> String {\n    return \"hello \\(name)\"\n}\n");
     ASSERT_GT(result.size(), 3u);
 
     bool found_func = false, found_import = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "func" && e.type == token::keyword::self) found_func = true;
         if (e.text == "import" && e.type == token::keyword::self) found_import = true;
     }
@@ -536,7 +537,7 @@ TEST(TomlLexerTest, Tokenize) {
 
     // Verify lossless tokenization
     std::string reconstructed;
-    for (const auto& e : result) reconstructed.append(e.text);
+    for (const auto &e : result) reconstructed.append(e.text);
     EXPECT_EQ(reconstructed, "[package]\nname = \"myapp\"\nversion = \"1.0.0\"\n");
 }
 
@@ -559,7 +560,7 @@ TEST(TypeScriptLexerTest, Tokenize) {
     ASSERT_GT(result.size(), 3u);
 
     bool found_interface = false, found_const = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "interface" && e.type == token::keyword::self) found_interface = true;
         if (e.text == "const" && e.type == token::keyword::self) found_const = true;
     }
@@ -587,7 +588,7 @@ TEST(XmlLexerTest, Tokenize) {
 
     // Verify lossless tokenization
     std::string reconstructed;
-    for (const auto& e : result) reconstructed.append(e.text);
+    for (const auto &e : result) reconstructed.append(e.text);
     EXPECT_EQ(reconstructed, "<?xml version=\"1.0\"?>\n<root attr=\"val\">\n  <child>text</child>\n</root>\n");
 }
 
@@ -610,7 +611,7 @@ TEST(YamlLexerTest, Tokenize) {
     ASSERT_GT(result.size(), 3u);
 
     bool found_key = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "name") found_key = true;
     }
     EXPECT_TRUE(found_key);
@@ -625,7 +626,7 @@ TEST(YamlLexerTest, Register) {
 // ── guess_lexer across all registered languages ─────────────────────────
 
 class AllLexersRegisteredTest : public ::testing::Test {
-protected:
+  protected:
     void SetUp() override {
         lexers::register_bash_lexer();
         lexers::register_csharp_lexer();

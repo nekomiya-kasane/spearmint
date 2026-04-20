@@ -3,17 +3,17 @@
 namespace spearmint::lexers {
 
 namespace {
-constexpr const char* aliases[] = {"ruby", "rb"};
-constexpr const char* filenames[] = {"*.rb", "*.gemspec", "*.rake", "Rakefile", "Gemfile"};
-constexpr const char* mimes[] = {"text/x-ruby", "application/x-ruby"};
+constexpr const char *aliases[] = {"ruby", "rb"};
+constexpr const char *filenames[] = {"*.rb", "*.gemspec", "*.rake", "Rakefile", "Gemfile"};
+constexpr const char *mimes[] = {"text/x-ruby", "application/x-ruby"};
 const lexer_info ruby_info = {
-    "ruby", "Ruby",
-    {aliases}, {filenames}, {mimes},
-    "https://www.ruby-lang.org", 10,
+    "ruby", "Ruby", {aliases}, {filenames}, {mimes}, "https://www.ruby-lang.org", 10,
 };
-}
+} // namespace
 
-const lexer_info& ruby_lexer::info() const noexcept { return ruby_info; }
+const lexer_info &ruby_lexer::info() const noexcept {
+    return ruby_info;
+}
 
 float ruby_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
@@ -32,8 +32,10 @@ state_map ruby_lexer::get_rules() const {
         {R"(\s+)", tk::whitespace, state_action::none()},
         {R"(#[^\n]*)", tk::comment::single, state_action::none()},
         {R"(=begin\b.*?=end\b)", tk::comment::multiline, state_action::none()},
-        {R"(\b(alias|and|begin|break|case|class|def|defined\?|do|else|elsif|end|ensure|false|for|if|in|module|next|nil|not|or|redo|rescue|retry|return|self|super|then|true|undef|unless|until|when|while|yield|__FILE__|__LINE__|__ENCODING__)\b)", tk::keyword::self, state_action::none()},
-        {R"(\b(require|require_relative|include|extend|prepend|attr_reader|attr_writer|attr_accessor|puts|print|p|gets|raise|lambda|proc)\b)", tk::name::builtin, state_action::none()},
+        {R"(\b(alias|and|begin|break|case|class|def|defined\?|do|else|elsif|end|ensure|false|for|if|in|module|next|nil|not|or|redo|rescue|retry|return|self|super|then|true|undef|unless|until|when|while|yield|__FILE__|__LINE__|__ENCODING__)\b)",
+         tk::keyword::self, state_action::none()},
+        {R"(\b(require|require_relative|include|extend|prepend|attr_reader|attr_writer|attr_accessor|puts|print|p|gets|raise|lambda|proc)\b)",
+         tk::name::builtin, state_action::none()},
         {R"(:[a-zA-Z_]\w*[!?]?)", tk::literal::string::symbol, state_action::none()},
         {R"(@{1,2}[a-zA-Z_]\w*)", tk::name::variable, state_action::none()},
         {R"(\$[a-zA-Z_]\w*)", tk::name::variable, state_action::none()},
@@ -66,9 +68,7 @@ state_map ruby_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_ruby_lexer() {
-    register_lexer([]() -> std::unique_ptr<lexer> {
-        return std::make_unique<ruby_lexer>();
-    }, ruby_info);
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<ruby_lexer>(); }, ruby_info);
 }
 
-}
+} // namespace spearmint::lexers

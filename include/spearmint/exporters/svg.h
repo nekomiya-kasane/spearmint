@@ -13,22 +13,20 @@ struct svg_options {
     int font_size = 14;
     int line_height = 20;
     int padding = 10;
-    const char* font_family = "monospace";
+    const char *font_family = "monospace";
 };
 
 class SPEARMINT_API svg_exporter : public exporter {
-public:
+  public:
     explicit svg_exporter(svg_options opts = {}) : opts_(std::move(opts)) {}
 
-    [[nodiscard]] std::string format(
-        const token_stream& tokens,
-        const style_def_view& style) const override;
+    [[nodiscard]] std::string format(const token_stream &tokens, const style_def_view &style) const override;
 
-private:
+  private:
     svg_options opts_;
 
     static std::string escape_xml(std::string_view text);
     static std::string color_to_hex(uint32_t color);
 };
 
-}  // namespace spearmint::exporters
+} // namespace spearmint::exporters

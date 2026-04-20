@@ -3,17 +3,17 @@
 namespace spearmint::lexers {
 
 namespace {
-constexpr const char* aliases[] = {"toml"};
-constexpr const char* filenames[] = {"*.toml", "Cargo.toml", "pyproject.toml"};
-constexpr const char* mimes[] = {"application/toml"};
+constexpr const char *aliases[] = {"toml"};
+constexpr const char *filenames[] = {"*.toml", "Cargo.toml", "pyproject.toml"};
+constexpr const char *mimes[] = {"application/toml"};
 const lexer_info toml_info = {
-    "toml", "TOML",
-    {aliases}, {filenames}, {mimes},
-    "https://toml.io", 10,
+    "toml", "TOML", {aliases}, {filenames}, {mimes}, "https://toml.io", 10,
 };
-}
+} // namespace
 
-const lexer_info& toml_lexer::info() const noexcept { return toml_info; }
+const lexer_info &toml_lexer::info() const noexcept {
+    return toml_info;
+}
 
 float toml_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
@@ -34,7 +34,8 @@ state_map toml_lexer::get_rules() const {
         {R"([a-zA-Z_][\w-]*(?=\s*=))", tk::name::attribute, state_action::none()},
         {R"(=)", tk::operator_::self, state_action::none()},
         {R"(\b(true|false)\b)", tk::keyword::constant, state_action::none()},
-        {R"(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?)", tk::literal::string::self, state_action::none()},
+        {R"(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?)", tk::literal::string::self,
+         state_action::none()},
         {R"(\d{4}-\d{2}-\d{2})", tk::literal::string::self, state_action::none()},
         {R"(\d{2}:\d{2}:\d{2}(\.\d+)?)", tk::literal::string::self, state_action::none()},
         {R"(0x[0-9a-fA-F_]+)", tk::literal::number::hex, state_action::none()},
@@ -77,9 +78,7 @@ state_map toml_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_toml_lexer() {
-    register_lexer([]() -> std::unique_ptr<lexer> {
-        return std::make_unique<toml_lexer>();
-    }, toml_info);
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<toml_lexer>(); }, toml_info);
 }
 
-}
+} // namespace spearmint::lexers

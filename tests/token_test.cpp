@@ -1,7 +1,7 @@
-#include <gtest/gtest.h>
-
 #include "spearmint/core/token.h"
 #include "spearmint/core/token_stream.h"
+
+#include <gtest/gtest.h>
 
 using namespace spearmint;
 
@@ -110,8 +110,7 @@ TEST(TokenTest, AllTokensCount) {
 
 TEST(TokenTest, AllTokensHaveNames) {
     for (uint32_t i = 0; i < detail::valid_token_count; ++i) {
-        EXPECT_NE(detail::all_tokens[i].name[0], '\0')
-            << "Token at index " << i << " has empty name";
+        EXPECT_NE(detail::all_tokens[i].name[0], '\0') << "Token at index " << i << " has empty name";
     }
 }
 

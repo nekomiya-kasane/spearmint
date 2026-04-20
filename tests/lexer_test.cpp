@@ -1,9 +1,9 @@
-#include <gtest/gtest.h>
-
 #include "spearmint/core/lexer.h"
-#include "spearmint/core/regex_lexer.h"
 #include "spearmint/core/lexer_registry.h"
+#include "spearmint/core/regex_lexer.h"
 #include "spearmint/lexers/python.h"
+
+#include <gtest/gtest.h>
 
 using namespace spearmint;
 
@@ -28,7 +28,7 @@ TEST(PythonLexerTest, SimpleAssignment) {
     // Find the identifier "x"
     bool found_name = false;
     bool found_number = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "x") {
             EXPECT_EQ(e.type, token::name::self);
             found_name = true;
@@ -47,7 +47,7 @@ TEST(PythonLexerTest, Keywords) {
     auto result = lex.tokenize("if True:\n    pass\n");
 
     bool found_if = false, found_true = false, found_pass = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "if") {
             EXPECT_EQ(e.type, token::keyword::self);
             found_if = true;
@@ -68,10 +68,11 @@ TEST(PythonLexerTest, Keywords) {
 
 TEST(PythonLexerTest, Strings) {
     lexers::python_lexer lex;
-    auto result = lex.tokenize(R"(s = "hello world")" "\n");
+    auto result = lex.tokenize(R"(s = "hello world")"
+                               "\n");
 
     bool found_string = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "hello world") {
             EXPECT_EQ(e.type, token::literal::string::double_);
             found_string = true;
@@ -85,7 +86,7 @@ TEST(PythonLexerTest, Comments) {
     auto result = lex.tokenize("# this is a comment\nx = 1\n");
 
     bool found_comment = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text.find("this is a comment") != std::string_view::npos) {
             EXPECT_EQ(e.type, token::comment::single);
             found_comment = true;
@@ -99,7 +100,7 @@ TEST(PythonLexerTest, Decorator) {
     auto result = lex.tokenize("@staticmethod\ndef foo(): pass\n");
 
     bool found_decorator = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "@staticmethod") {
             EXPECT_EQ(e.type, token::name::decorator);
             found_decorator = true;
@@ -113,7 +114,7 @@ TEST(PythonLexerTest, Numbers) {
     auto result = lex.tokenize("a = 0xFF\nb = 3.14\nc = 0b1010\n");
 
     bool found_hex = false, found_float = false, found_bin = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "0xFF") {
             EXPECT_EQ(e.type, token::literal::number::hex);
             found_hex = true;
@@ -137,7 +138,7 @@ TEST(PythonLexerTest, BuiltinFunctions) {
     auto result = lex.tokenize("print(len([1,2,3]))\n");
 
     bool found_print = false, found_len = false;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         if (e.text == "print") {
             EXPECT_EQ(e.type, token::name::builtin);
             found_print = true;
@@ -165,7 +166,7 @@ TEST(PythonLexerTest, NoTokensLost) {
 
     // Reconstruct source from tokens
     std::string reconstructed;
-    for (const auto& e : result) {
+    for (const auto &e : result) {
         reconstructed.append(e.text);
     }
     EXPECT_EQ(reconstructed, source);
@@ -174,10 +175,8 @@ TEST(PythonLexerTest, NoTokensLost) {
 // ── Registry tests ─────────────────────────────────────────────────────
 
 class LexerRegistryTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        lexers::register_python_lexer();
-    }
+  protected:
+    void SetUp() override { lexers::register_python_lexer(); }
 };
 
 TEST_F(LexerRegistryTest, GetByName) {

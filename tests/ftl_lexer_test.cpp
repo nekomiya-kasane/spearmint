@@ -3,14 +3,15 @@
  * @brief Tests for the Fluent Translation List (.ftl) lexer.
  */
 
-#include <gtest/gtest.h>
 #include "spearmint/lexers/ftl.h"
+
+#include <gtest/gtest.h>
 
 using namespace spearmint;
 using namespace spearmint::lexers;
 
 class FtlLexerTest : public ::testing::Test {
-protected:
+  protected:
     ftl_lexer lexer;
 };
 
@@ -48,7 +49,7 @@ TEST_F(FtlLexerTest, simple_message) {
     bool has_name = false;
     bool has_operator = false;
     bool has_string = false;
-    for (const auto& tok : result.tokens) {
+    for (const auto &tok : result.tokens) {
         if (tok.type == token::name::variable) has_name = true;
         if (tok.type == token::operator_::self) has_operator = true;
         if (tok.type == token::literal::string::self) has_string = true;
@@ -65,9 +66,8 @@ TEST_F(FtlLexerTest, comments) {
     EXPECT_FALSE(result.tokens.empty());
 
     int comment_count = 0;
-    for (const auto& tok : result.tokens) {
-        if (tok.type == token::comment::single || tok.type == token::comment::special)
-            ++comment_count;
+    for (const auto &tok : result.tokens) {
+        if (tok.type == token::comment::single || tok.type == token::comment::special) ++comment_count;
     }
     EXPECT_EQ(comment_count, 3);
 }
@@ -79,9 +79,8 @@ TEST_F(FtlLexerTest, term_definition) {
     EXPECT_FALSE(result.tokens.empty());
 
     bool has_term = false;
-    for (const auto& tok : result.tokens) {
-        if (tok.type == token::name::function && tok.text.find("-brand") != std::string_view::npos)
-            has_term = true;
+    for (const auto &tok : result.tokens) {
+        if (tok.type == token::name::function && tok.text.find("-brand") != std::string_view::npos) has_term = true;
     }
     EXPECT_TRUE(has_term);
 }
@@ -95,13 +94,10 @@ TEST_F(FtlLexerTest, placeable_variable) {
     bool has_var = false;
     bool has_open_brace = false;
     bool has_close_brace = false;
-    for (const auto& tok : result.tokens) {
-        if (tok.type == token::name::variable && tok.text.find("$name") != std::string_view::npos)
-            has_var = true;
-        if (tok.type == token::punctuation::self && tok.text == "{")
-            has_open_brace = true;
-        if (tok.type == token::punctuation::self && tok.text == "}")
-            has_close_brace = true;
+    for (const auto &tok : result.tokens) {
+        if (tok.type == token::name::variable && tok.text.find("$name") != std::string_view::npos) has_var = true;
+        if (tok.type == token::punctuation::self && tok.text == "{") has_open_brace = true;
+        if (tok.type == token::punctuation::self && tok.text == "}") has_close_brace = true;
     }
     EXPECT_TRUE(has_var);
     EXPECT_TRUE(has_open_brace);
@@ -115,9 +111,8 @@ TEST_F(FtlLexerTest, placeable_term_ref) {
     EXPECT_FALSE(result.tokens.empty());
 
     bool has_term_ref = false;
-    for (const auto& tok : result.tokens) {
-        if (tok.type == token::name::function && tok.text.find("-brand") != std::string_view::npos)
-            has_term_ref = true;
+    for (const auto &tok : result.tokens) {
+        if (tok.type == token::name::function && tok.text.find("-brand") != std::string_view::npos) has_term_ref = true;
     }
     EXPECT_TRUE(has_term_ref);
 }
@@ -129,9 +124,8 @@ TEST_F(FtlLexerTest, attribute) {
     EXPECT_FALSE(result.tokens.empty());
 
     int attr_count = 0;
-    for (const auto& tok : result.tokens) {
-        if (tok.type == token::name::attribute)
-            ++attr_count;
+    for (const auto &tok : result.tokens) {
+        if (tok.type == token::name::attribute) ++attr_count;
     }
     EXPECT_GE(attr_count, 2);
 }
@@ -139,21 +133,17 @@ TEST_F(FtlLexerTest, attribute) {
 // ── Selector with variant keys ──────────────────────────────────────────
 
 TEST_F(FtlLexerTest, selector_variants) {
-    auto result = lexer.tokenize(
-        "emails = { $count ->\n"
-        "    [one] You have one email.\n"
-        "    *[other] You have { $count } emails.\n"
-        "}\n"
-    );
+    auto result = lexer.tokenize("emails = { $count ->\n"
+                                 "    [one] You have one email.\n"
+                                 "    *[other] You have { $count } emails.\n"
+                                 "}\n");
     EXPECT_FALSE(result.tokens.empty());
 
     bool has_arrow = false;
     bool has_keyword = false;
-    for (const auto& tok : result.tokens) {
-        if (tok.type == token::operator_::self && tok.text == "->")
-            has_arrow = true;
-        if (tok.type == token::keyword::self)
-            has_keyword = true;
+    for (const auto &tok : result.tokens) {
+        if (tok.type == token::operator_::self && tok.text == "->") has_arrow = true;
+        if (tok.type == token::keyword::self) has_keyword = true;
     }
     EXPECT_TRUE(has_arrow);
     EXPECT_TRUE(has_keyword);
@@ -166,9 +156,8 @@ TEST_F(FtlLexerTest, function_call) {
     EXPECT_FALSE(result.tokens.empty());
 
     bool has_func = false;
-    for (const auto& tok : result.tokens) {
-        if (tok.type == token::name::builtin && tok.text.find("DATETIME") != std::string_view::npos)
-            has_func = true;
+    for (const auto &tok : result.tokens) {
+        if (tok.type == token::name::builtin && tok.text.find("DATETIME") != std::string_view::npos) has_func = true;
     }
     EXPECT_TRUE(has_func);
 }
@@ -180,9 +169,8 @@ TEST_F(FtlLexerTest, number_literal) {
     EXPECT_FALSE(result.tokens.empty());
 
     bool has_number = false;
-    for (const auto& tok : result.tokens) {
-        if (tok.type == token::literal::number::float_)
-            has_number = true;
+    for (const auto &tok : result.tokens) {
+        if (tok.type == token::literal::number::float_) has_number = true;
     }
     EXPECT_TRUE(has_number);
 }

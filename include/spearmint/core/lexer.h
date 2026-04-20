@@ -8,6 +8,10 @@
  * `lexer_info` provides metadata for discovery and registration.
  */
 
+#include "spearmint/core/token.h"
+#include "spearmint/core/token_stream.h"
+#include "spearmint/exports.h"
+
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -16,22 +20,18 @@
 #include <string_view>
 #include <vector>
 
-#include "spearmint/exports.h"
-#include "spearmint/core/token.h"
-#include "spearmint/core/token_stream.h"
-
 namespace spearmint {
 
 // ── Lexer metadata ─────────────────────────────────────────────────────
 
 struct lexer_info {
-    const char* name = "";
-    const char* display_name = "";
-    std::span<const char* const> aliases;
-    std::span<const char* const> filenames;       ///< glob patterns, e.g. "*.py"
-    std::span<const char* const> mime_types;
-    const char* url = "";
-    int priority = 0;                              ///< higher = preferred
+    const char *name = "";
+    const char *display_name = "";
+    std::span<const char *const> aliases;
+    std::span<const char *const> filenames; ///< glob patterns, e.g. "*.py"
+    std::span<const char *const> mime_types;
+    const char *url = "";
+    int priority = 0; ///< higher = preferred
 };
 
 // ── Lexer options ──────────────────────────────────────────────────────
@@ -40,16 +40,16 @@ struct lexer_options {
     bool strip_nl = true;
     bool strip_all = false;
     bool ensure_nl = true;
-    int tab_size = 0;                              ///< 0 = no tab expansion
+    int tab_size = 0; ///< 0 = no tab expansion
 };
 
 // ── Abstract lexer ─────────────────────────────────────────────────────
 
 class SPEARMINT_API lexer {
-public:
+  public:
     virtual ~lexer() = default;
 
-    [[nodiscard]] virtual const lexer_info& info() const noexcept = 0;
+    [[nodiscard]] virtual const lexer_info &info() const noexcept = 0;
 
     /**
      * @brief Tokenize source code into an owning result.
@@ -61,14 +61,12 @@ public:
      *
      * Used for auto-detection. Default returns 0.
      */
-    [[nodiscard]] virtual float analyse_text(std::string_view /*source*/) const noexcept {
-        return 0.0f;
-    }
+    [[nodiscard]] virtual float analyse_text(std::string_view /*source*/) const noexcept { return 0.0f; }
 
-    void set_options(const lexer_options& opts) noexcept { options_ = opts; }
-    [[nodiscard]] const lexer_options& options() const noexcept { return options_; }
+    void set_options(const lexer_options &opts) noexcept { options_ = opts; }
+    [[nodiscard]] const lexer_options &options() const noexcept { return options_; }
 
-protected:
+  protected:
     lexer_options options_;
 
     /**
@@ -81,4 +79,4 @@ protected:
 
 using lexer_factory = std::function<std::unique_ptr<lexer>()>;
 
-}  // namespace spearmint
+} // namespace spearmint

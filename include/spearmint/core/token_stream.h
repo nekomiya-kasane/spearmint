@@ -5,11 +5,11 @@
  * @brief Token entry and token stream types for semantic tokenization output.
  */
 
+#include "spearmint/core/token.h"
+
 #include <string>
 #include <string_view>
 #include <vector>
-
-#include "spearmint/core/token.h"
 
 namespace spearmint {
 
@@ -20,7 +20,7 @@ struct token_entry {
     token_type type;
     std::string_view text;
 
-    [[nodiscard]] constexpr bool operator==(const token_entry& o) const noexcept {
+    [[nodiscard]] constexpr bool operator==(const token_entry &o) const noexcept {
         return type == o.type && text == o.text;
     }
 };
@@ -46,7 +46,7 @@ struct tokenize_result {
     [[nodiscard]] auto end() const noexcept { return tokens.end(); }
     [[nodiscard]] std::size_t size() const noexcept { return tokens.size(); }
     [[nodiscard]] bool empty() const noexcept { return tokens.empty(); }
-    [[nodiscard]] const token_entry& operator[](std::size_t i) const { return tokens[i]; }
+    [[nodiscard]] const token_entry &operator[](std::size_t i) const { return tokens[i]; }
 };
 
-}  // namespace spearmint
+} // namespace spearmint

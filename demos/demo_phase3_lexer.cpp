@@ -3,19 +3,19 @@
  * @brief Phase 3 demo: tokenize Python source and display with style colors.
  */
 
-#include <cstdio>
-
-#include "spearmint/core/token.h"
-#include "spearmint/core/token_stream.h"
+#include "spearmint/core/lexer_registry.h"
 #include "spearmint/core/style.h"
 #include "spearmint/core/style_registry.h"
-#include "spearmint/core/lexer_registry.h"
+#include "spearmint/core/token.h"
+#include "spearmint/core/token_stream.h"
 #include "spearmint/lexers/python.h"
 #include "spearmint/styles/builtin.h"
 
+#include <cstdio>
+
 using namespace spearmint;
 
-static const char* python_source = R"(#!/usr/bin/env python3
+static const char *python_source = R"(#!/usr/bin/env python3
 """Fibonacci sequence generator."""
 
 import sys
@@ -79,7 +79,7 @@ int main() {
     std::printf("Total tokens: %zu\n\n", ts.size());
 
     // Display with monokai colors
-    const auto* style = get_style("monokai");
+    const auto *style = get_style("monokai");
     if (!style) {
         std::puts("ERROR: monokai style not found");
         return 1;
@@ -87,7 +87,7 @@ int main() {
 
     std::puts("=== Tokenized output (with monokai colors) ===\n");
 
-    for (const auto& entry : ts) {
+    for (const auto &entry : ts) {
         // Skip pure whitespace for display
         bool all_ws = true;
         for (char c : entry.text) {
@@ -98,24 +98,31 @@ int main() {
         }
         if (all_ws) continue;
 
-        const auto* rule = style->lookup(entry.type);
+        const auto *rule = style->lookup(entry.type);
         std::printf("%-35s ", entry.type.name);
         if (rule && rule->has_fg) {
             std::printf("#%06X ", rule->fg);
         } else {
             std::printf("        ");
         }
-        if (rule && rule->bold) std::printf("B ");
-        else std::printf("  ");
-        if (rule && rule->italic) std::printf("I ");
-        else std::printf("  ");
+        if (rule && rule->bold)
+            std::printf("B ");
+        else
+            std::printf("  ");
+        if (rule && rule->italic)
+            std::printf("I ");
+        else
+            std::printf("  ");
 
         // Print text, replacing newlines
         std::printf("| ");
         for (char c : entry.text) {
-            if (c == '\n') std::printf("\\n");
-            else if (c == '\t') std::printf("\\t");
-            else std::putchar(c);
+            if (c == '\n')
+                std::printf("\\n");
+            else if (c == '\t')
+                std::printf("\\t");
+            else
+                std::putchar(c);
         }
         std::putchar('\n');
     }
@@ -124,13 +131,12 @@ int main() {
 
     // Verify lossless tokenization
     std::string reconstructed;
-    for (const auto& e : ts) {
+    for (const auto &e : ts) {
         reconstructed.append(e.text);
     }
     std::printf("Original length:      %zu\n", std::string_view(python_source).size());
     std::printf("Reconstructed length: %zu\n", reconstructed.size());
-    std::printf("Lossless: %s\n",
-                reconstructed == python_source ? "YES" : "NO");
+    std::printf("Lossless: %s\n", reconstructed == python_source ? "YES" : "NO");
 
     return 0;
 }

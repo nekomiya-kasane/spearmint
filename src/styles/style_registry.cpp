@@ -4,6 +4,7 @@
  */
 
 #include "spearmint/core/style_registry.h"
+
 #include "spearmint/styles/builtin.h"
 
 #include <algorithm>
@@ -13,9 +14,9 @@ namespace spearmint {
 
 // ── style_def_view::lookup ─────────────────────────────────────────────
 
-const style_rule* style_def_view::lookup(token_type t) const noexcept {
+const style_rule *style_def_view::lookup(token_type t) const noexcept {
     for (int depth = 0; depth < 8; ++depth) {
-        for (const auto& e : entries) {
+        for (const auto &e : entries) {
             if (e.token == t) {
                 return &e.rule;
             }
@@ -62,40 +63,40 @@ struct registry {
     }
 };
 
-registry& get_registry() {
+registry &get_registry() {
     static registry r;
     r.ensure_builtins();
     return r;
 }
 
-}  // namespace
+} // namespace
 
 // ── Public API ─────────────────────────────────────────────────────────
 
-SPEARMINT_API const style_def_view* get_style(std::string_view name) {
-    auto& reg = get_registry();
+SPEARMINT_API const style_def_view *get_style(std::string_view name) {
+    auto &reg = get_registry();
     std::lock_guard lock(reg.mtx);
-    for (const auto& s : reg.styles) {
+    for (const auto &s : reg.styles) {
         if (s.name == name) return &s;
     }
     return nullptr;
 }
 
 SPEARMINT_API std::vector<std::string_view> get_all_styles() {
-    auto& reg = get_registry();
+    auto &reg = get_registry();
     std::lock_guard lock(reg.mtx);
     std::vector<std::string_view> names;
     names.reserve(reg.styles.size());
-    for (const auto& s : reg.styles) {
+    for (const auto &s : reg.styles) {
         names.push_back(s.name);
     }
     return names;
 }
 
 SPEARMINT_API void register_style(style_def_view def) {
-    auto& reg = get_registry();
+    auto &reg = get_registry();
     std::lock_guard lock(reg.mtx);
     reg.styles.push_back(def);
 }
 
-}  // namespace spearmint
+} // namespace spearmint

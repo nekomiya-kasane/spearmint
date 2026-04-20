@@ -9,23 +9,17 @@ namespace spearmint::lexers {
 
 namespace {
 
-constexpr const char* aliases[] = {"python", "py", "python3", "py3"};
-constexpr const char* filenames[] = {"*.py", "*.pyw", "*.pyi", "*.jy", "*.sage"};
-constexpr const char* mimes[] = {"text/x-python", "application/x-python"};
+constexpr const char *aliases[] = {"python", "py", "python3", "py3"};
+constexpr const char *filenames[] = {"*.py", "*.pyw", "*.pyi", "*.jy", "*.sage"};
+constexpr const char *mimes[] = {"text/x-python", "application/x-python"};
 
 const lexer_info python_info = {
-    "python",
-    "Python",
-    {aliases},
-    {filenames},
-    {mimes},
-    "https://python.org",
-    10,
+    "python", "Python", {aliases}, {filenames}, {mimes}, "https://python.org", 10,
 };
 
-}  // namespace
+} // namespace
 
-const lexer_info& python_lexer::info() const noexcept {
+const lexer_info &python_lexer::info() const noexcept {
     return python_info;
 }
 
@@ -34,9 +28,7 @@ float python_lexer::analyse_text(std::string_view source) const noexcept {
     if (source.find("import ") != std::string_view::npos) score += 0.1f;
     if (source.find("def ") != std::string_view::npos) score += 0.1f;
     if (source.find("class ") != std::string_view::npos) score += 0.1f;
-    if (source.starts_with("#!/usr/bin/env python") ||
-        source.starts_with("#!/usr/bin/python"))
-        score += 0.5f;
+    if (source.starts_with("#!/usr/bin/env python") || source.starts_with("#!/usr/bin/python")) score += 0.5f;
     if (source.find("print(") != std::string_view::npos) score += 0.05f;
     return score > 1.0f ? 1.0f : score;
 }
@@ -76,8 +68,7 @@ state_map python_lexer::get_rules() const {
          tk::name::builtin, state_action::none()},
 
         // Builtin constants
-        {R"(\b(?:NotImplemented|Ellipsis|__debug__)\b)",
-         tk::keyword::constant, state_action::none()},
+        {R"(\b(?:NotImplemented|Ellipsis|__debug__)\b)", tk::keyword::constant, state_action::none()},
 
         // Builtin exceptions
         {R"(\b(?:ArithmeticError|AssertionError|AttributeError|BaseException|BlockingIOError|BrokenPipeError|BufferError|BytesWarning|ChildProcessError|ConnectionAbortedError|ConnectionError|ConnectionRefusedError|ConnectionResetError|DeprecationWarning|EOFError|EnvironmentError|Exception|FileExistsError|FileNotFoundError|FloatingPointError|FutureWarning|GeneratorExit|IOError|ImportError|ImportWarning|IndentationError|IndexError|InterruptedError|IsADirectoryError|KeyError|KeyboardInterrupt|LookupError|MemoryError|ModuleNotFoundError|NameError|NotADirectoryError|NotImplementedError|OSError|OverflowError|PendingDeprecationWarning|PermissionError|ProcessLookupError|RecursionError|ReferenceError|ResourceWarning|RuntimeError|RuntimeWarning|StopAsyncIteration|StopIteration|SyntaxError|SyntaxWarning|SystemError|SystemExit|TabError|TimeoutError|TypeError|UnboundLocalError|UnicodeDecodeError|UnicodeEncodeError|UnicodeError|UnicodeTranslationError|UnicodeWarning|UserWarning|ValueError|Warning|WindowsError|ZeroDivisionError)\b)",
@@ -165,10 +156,7 @@ state_map python_lexer::get_rules() const {
 }
 
 SPEARMINT_API void register_python_lexer() {
-    register_lexer(
-        []() -> std::unique_ptr<lexer> { return std::make_unique<python_lexer>(); },
-        python_info
-    );
+    register_lexer([]() -> std::unique_ptr<lexer> { return std::make_unique<python_lexer>(); }, python_info);
 }
 
-}  // namespace spearmint::lexers
+} // namespace spearmint::lexers

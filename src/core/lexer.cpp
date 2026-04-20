@@ -55,11 +55,9 @@ std::string lexer::preprocess(std::string_view source) const {
     } else if (options_.strip_nl) {
         // Strip leading/trailing blank lines
         std::size_t start = 0;
-        while (start < result.size() && (result[start] == '\n' || result[start] == '\r'))
-            ++start;
+        while (start < result.size() && (result[start] == '\n' || result[start] == '\r')) ++start;
         std::size_t end = result.size();
-        while (end > start && (result[end - 1] == '\n' || result[end - 1] == '\r'))
-            --end;
+        while (end > start && (result[end - 1] == '\n' || result[end - 1] == '\r')) --end;
         result = result.substr(start, end - start);
     }
 
@@ -71,4 +69,4 @@ std::string lexer::preprocess(std::string_view source) const {
     return result;
 }
 
-}  // namespace spearmint
+} // namespace spearmint
