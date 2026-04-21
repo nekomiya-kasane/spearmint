@@ -23,8 +23,12 @@ const lexer_info &ini_lexer::info() const noexcept {
 
 float ini_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("[") != src.npos && src.find("]") != src.npos) score += 0.1f;
-    if (src.find("=") != src.npos) score += 0.05f;
+    if (src.find("[") != src.npos && src.find("]") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("=") != src.npos) {
+        score += 0.05f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

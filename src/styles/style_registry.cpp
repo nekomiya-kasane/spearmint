@@ -21,9 +21,13 @@ const style_rule *style_def_view::lookup(token_type t) const noexcept {
                 return &e.rule;
             }
         }
-        if (t.id >= detail::token_count) return nullptr;
+        if (t.id >= detail::token_count) {
+            return nullptr;
+        }
         uint32_t pid = detail::token_table[t.id].parent_id;
-        if (pid == t.id) return nullptr;
+        if (pid == t.id) {
+            return nullptr;
+        }
         t = detail::token_table[pid];
     }
     return nullptr;
@@ -39,9 +43,13 @@ struct registry {
     bool initialized = false;
 
     void ensure_builtins() {
-        if (initialized) return;
+        if (initialized) {
+            return;
+        }
         std::lock_guard lock(mtx);
-        if (initialized) return;
+        if (initialized) {
+            return;
+        }
 
         styles.push_back(style_def_view(styles::default_));
         styles.push_back(style_def_view(styles::monokai));
@@ -77,7 +85,9 @@ SPEARMINT_API const style_def_view *get_style(std::string_view name) {
     auto &reg = get_registry();
     std::lock_guard lock(reg.mtx);
     for (const auto &s : reg.styles) {
-        if (s.name == name) return &s;
+        if (s.name == name) {
+            return &s;
+        }
     }
     return nullptr;
 }

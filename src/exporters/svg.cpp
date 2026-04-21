@@ -51,7 +51,9 @@ std::string svg_exporter::format(const token_stream &tokens, const style_def_vie
     for (const auto &entry : tokens) {
         for (char c : entry.text) {
             if (c == '\n') {
-                if (col > max_cols) max_cols = col;
+                if (col > max_cols) {
+                    max_cols = col;
+                }
                 col = 0;
                 ++lines;
             } else if (c == '\t') {
@@ -61,7 +63,9 @@ std::string svg_exporter::format(const token_stream &tokens, const style_def_vie
             }
         }
     }
-    if (col > max_cols) max_cols = col;
+    if (col > max_cols) {
+        max_cols = col;
+    }
 
     int char_width = static_cast<int>(opts_.font_size * 0.6);
     int width = max_cols * char_width + opts_.padding * 2;

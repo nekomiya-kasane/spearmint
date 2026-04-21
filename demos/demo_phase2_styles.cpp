@@ -25,13 +25,16 @@ int main() {
 
     for (auto name : names) {
         const auto *s = get_style(name);
-        if (!s) continue;
+        if (!s) {
+            continue;
+        }
 
         std::printf("%-20.*s  bg=", static_cast<int>(s->display_name.size()), s->display_name.data());
-        if (s->has_background)
+        if (s->has_background) {
             print_hex(s->background_color);
-        else
+        } else {
             std::printf("(none)");
+        }
         std::printf("  entries=%zu\n", s->entries.size());
     }
 
@@ -61,12 +64,17 @@ int main() {
         std::printf("%-35s | \"%.*s\"", entry.type.name, static_cast<int>(entry.text.size()), entry.text.data());
         if (rule) {
             std::printf("  → fg=");
-            if (rule->has_fg)
+            if (rule->has_fg) {
                 print_hex(rule->fg);
-            else
+            } else {
                 std::printf("(inherit)");
-            if (rule->bold) std::printf(" bold");
-            if (rule->italic) std::printf(" italic");
+            }
+            if (rule->bold) {
+                std::printf(" bold");
+            }
+            if (rule->italic) {
+                std::printf(" italic");
+            }
         } else {
             std::printf("  → (no rule)");
         }

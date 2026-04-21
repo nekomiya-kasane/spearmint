@@ -99,9 +99,13 @@ template <std::size_t N> struct static_style_def {
                 }
             }
             // Walk to parent
-            if (t.id >= detail::token_count) return nullptr;
+            if (t.id >= detail::token_count) {
+                return nullptr;
+            }
             uint32_t pid = detail::token_table[t.id].parent_id;
-            if (pid == t.id) return nullptr; // reached root with no match
+            if (pid == t.id) {
+                return nullptr; // reached root with no match
+            }
             t = detail::token_table[pid];
         }
         return nullptr;

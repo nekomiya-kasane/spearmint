@@ -76,9 +76,15 @@ std::string html_exporter::format(const token_stream &tokens, const style_def_vi
                 out += color_to_css(rule->fg);
                 out += ";";
             }
-            if (rule->bold) out += "font-weight:bold;";
-            if (rule->italic) out += "font-style:italic;";
-            if (rule->underline) out += "text-decoration:underline;";
+            if (rule->bold) {
+                out += "font-weight:bold;";
+            }
+            if (rule->italic) {
+                out += "font-style:italic;";
+            }
+            if (rule->underline) {
+                out += "text-decoration:underline;";
+            }
             out += "\">";
         }
 

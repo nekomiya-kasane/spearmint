@@ -75,10 +75,18 @@ static tapiru::style to_tapiru_style(const spearmint::style_rule &rule) {
             tapiru::color::from_rgb(static_cast<uint8_t>((rule.bg >> 16) & 0xFF),
                                     static_cast<uint8_t>((rule.bg >> 8) & 0xFF), static_cast<uint8_t>(rule.bg & 0xFF));
     }
-    if (rule.bold) s.attrs |= tapiru::attr::bold;
-    if (rule.italic) s.attrs |= tapiru::attr::italic;
-    if (rule.underline) s.attrs |= tapiru::attr::underline;
-    if (rule.strike) s.attrs |= tapiru::attr::strike;
+    if (rule.bold) {
+        s.attrs |= tapiru::attr::bold;
+    }
+    if (rule.italic) {
+        s.attrs |= tapiru::attr::italic;
+    }
+    if (rule.underline) {
+        s.attrs |= tapiru::attr::underline;
+    }
+    if (rule.strike) {
+        s.attrs |= tapiru::attr::strike;
+    }
     return s;
 }
 
@@ -114,7 +122,9 @@ static void register_all_lexers() {
 
 static std::string read_file(const char *path) {
     std::ifstream f(path, std::ios::binary);
-    if (!f) return {};
+    if (!f) {
+        return {};
+    }
     std::ostringstream ss;
     ss << f.rdbuf();
     return ss.str();
@@ -123,7 +133,9 @@ static std::string read_file(const char *path) {
 static std::string basename(const char *path) {
     std::string_view sv(path);
     auto pos = sv.find_last_of("/\\");
-    if (pos != std::string_view::npos) sv = sv.substr(pos + 1);
+    if (pos != std::string_view::npos) {
+        sv = sv.substr(pos + 1);
+    }
     return std::string(sv);
 }
 
@@ -270,8 +282,10 @@ int main(int argc, char *argv[]) {
 
         // Separator line (bypass markup parser — write ANSI directly)
         auto tw = con.term_width();
-        std::string sep_line = "\033[2m";                                             // dim
-        for (uint32_t i = 0; i < (tw > 0 ? tw : 80); ++i) sep_line += "\xe2\x94\x80"; // U+2500 ─
+        std::string sep_line = "\033[2m"; // dim
+        for (uint32_t i = 0; i < (tw > 0 ? tw : 80); ++i) {
+            sep_line += "\xe2\x94\x80"; // U+2500 ─
+        }
         sep_line += "\033[0m\n";
         con.write(sep_line);
     }
@@ -314,7 +328,9 @@ int main(int argc, char *argv[]) {
             if (rule) {
                 auto ts = to_tapiru_style(*rule);
                 token_style.fg = ts.fg.is_default() ? token_style.fg : ts.fg;
-                if (!ts.bg.is_default()) token_style.bg = ts.bg;
+                if (!ts.bg.is_default()) {
+                    token_style.bg = ts.bg;
+                }
                 token_style.attrs = token_style.attrs | ts.attrs;
             }
 

@@ -23,10 +23,18 @@ const lexer_info &go_lexer::info() const noexcept {
 
 float go_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("package ") != src.npos) score += 0.3f;
-    if (src.find("func ") != src.npos) score += 0.2f;
-    if (src.find("import ") != src.npos) score += 0.1f;
-    if (src.find(":=") != src.npos) score += 0.1f;
+    if (src.find("package ") != src.npos) {
+        score += 0.3f;
+    }
+    if (src.find("func ") != src.npos) {
+        score += 0.2f;
+    }
+    if (src.find("import ") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find(":=") != src.npos) {
+        score += 0.1f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

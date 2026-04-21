@@ -59,30 +59,33 @@ int main() {
     exporters::html_exporter html_exp({.full_page = true});
     auto html = html_exp.format(result.tokens, style);
     std::printf("Total HTML size: %zu bytes\n", html.size());
-    if (html.size() > 500)
+    if (html.size() > 500) {
         std::printf("%.500s...\n\n", html.c_str());
-    else
+    } else {
         std::printf("%s\n\n", html.c_str());
+    }
 
     // ── SVG ────────────────────────────────────────────────────────────
     std::puts("--- SVG output (first 500 chars) ---\n");
     exporters::svg_exporter svg_exp;
     auto svg = svg_exp.format(result.tokens, style);
     std::printf("Total SVG size: %zu bytes\n", svg.size());
-    if (svg.size() > 500)
+    if (svg.size() > 500) {
         std::printf("%.500s...\n\n", svg.c_str());
-    else
+    } else {
         std::printf("%s\n\n", svg.c_str());
+    }
 
     // ── LaTeX ──────────────────────────────────────────────────────────
     std::puts("--- LaTeX output (first 500 chars) ---\n");
     exporters::latex_exporter latex_exp;
     auto tex = latex_exp.format(result.tokens, style);
     std::printf("Total LaTeX size: %zu bytes\n", tex.size());
-    if (tex.size() > 500)
+    if (tex.size() > 500) {
         std::printf("%.500s...\n\n", tex.c_str());
-    else
+    } else {
         std::printf("%s\n\n", tex.c_str());
+    }
 
     return 0;
 }

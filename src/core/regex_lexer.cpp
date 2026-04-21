@@ -10,12 +10,16 @@
 namespace spearmint {
 
 void regex_lexer::ensure_compiled() const {
-    if (compiled_ready_) return;
+    if (compiled_ready_) {
+        return;
+    }
 
     // Thread safety for lazy compilation
     static std::mutex compile_mtx;
     std::lock_guard lock(compile_mtx);
-    if (compiled_ready_) return;
+    if (compiled_ready_) {
+        return;
+    }
 
     auto rules = get_rules();
     for (auto &[state_name, rlist] : rules) {
@@ -52,7 +56,9 @@ tokenize_result regex_lexer::tokenize(std::string_view source) const {
     while (pos < src.size()) {
         const auto &current_state = state_stack.back();
         auto it = compiled_.find(current_state);
-        if (it == compiled_.end()) break;
+        if (it == compiled_.end()) {
+            break;
+        }
 
         const auto &rules = it->second;
         bool matched = false;
@@ -63,7 +69,9 @@ tokenize_result regex_lexer::tokenize(std::string_view source) const {
             std::size_t remaining = src.size() - pos;
 
             if (std::regex_search(start, start + remaining, m, rule.re, std::regex_constants::match_continuous)) {
-                if (m.length(0) == 0) continue; // skip zero-length matches
+                if (m.length(0) == 0) {
+                    continue; // skip zero-length matches
+                }
 
                 if (!rule.group_tokens.empty()) {
                     // Multi-group: each capture group → different token
@@ -89,10 +97,14 @@ tokenize_result regex_lexer::tokenize(std::string_view source) const {
                     state_stack.push_back(rule.action.target);
                     break;
                 case state_action::pop:
-                    if (state_stack.size() > 1) state_stack.pop_back();
+                    if (state_stack.size() > 1) {
+                        state_stack.pop_back();
+                    }
                     break;
                 case state_action::push_pop:
-                    if (state_stack.size() > 1) state_stack.pop_back();
+                    if (state_stack.size() > 1) {
+                        state_stack.pop_back();
+                    }
                     state_stack.push_back(rule.action.target);
                     break;
                 }

@@ -42,18 +42,32 @@ const lexer_info &ftl_lexer::info() const noexcept {
 float ftl_lexer::analyse_text(std::string_view source) const noexcept {
     float score = 0.0f;
     // Terms start with `-`
-    if (source.find("\n-") != std::string_view::npos) score += 0.1f;
+    if (source.find("\n-") != std::string_view::npos) {
+        score += 0.1f;
+    }
     // Placeables use `{ $var }` or `{ -term }`
-    if (source.find("{ $") != std::string_view::npos) score += 0.2f;
-    if (source.find("{ -") != std::string_view::npos) score += 0.15f;
+    if (source.find("{ $") != std::string_view::npos) {
+        score += 0.2f;
+    }
+    if (source.find("{ -") != std::string_view::npos) {
+        score += 0.15f;
+    }
     // Selectors use `->` inside placeables
-    if (source.find(" ->") != std::string_view::npos) score += 0.1f;
+    if (source.find(" ->") != std::string_view::npos) {
+        score += 0.1f;
+    }
     // Variant keys `[one]`, `*[other]`
-    if (source.find("*[") != std::string_view::npos) score += 0.15f;
+    if (source.find("*[") != std::string_view::npos) {
+        score += 0.15f;
+    }
     // Resource comments `###`
-    if (source.find("###") != std::string_view::npos) score += 0.1f;
+    if (source.find("###") != std::string_view::npos) {
+        score += 0.1f;
+    }
     // Attributes `.attr =`
-    if (source.find("\n    .") != std::string_view::npos) score += 0.1f;
+    if (source.find("\n    .") != std::string_view::npos) {
+        score += 0.1f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

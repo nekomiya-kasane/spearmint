@@ -23,10 +23,18 @@ const lexer_info &css_lexer::info() const noexcept {
 
 float css_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("{") != src.npos && src.find("}") != src.npos) score += 0.1f;
-    if (src.find("color:") != src.npos || src.find("margin:") != src.npos) score += 0.2f;
-    if (src.find("@media") != src.npos) score += 0.2f;
-    if (src.find("display:") != src.npos) score += 0.1f;
+    if (src.find("{") != src.npos && src.find("}") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("color:") != src.npos || src.find("margin:") != src.npos) {
+        score += 0.2f;
+    }
+    if (src.find("@media") != src.npos) {
+        score += 0.2f;
+    }
+    if (src.find("display:") != src.npos) {
+        score += 0.1f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

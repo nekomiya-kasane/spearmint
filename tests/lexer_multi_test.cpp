@@ -23,8 +23,12 @@ TEST(CppLexerTest, Keywords) {
 
     bool found_int = false, found_return = false;
     for (const auto &e : result) {
-        if (e.text == "int" && e.type == token::keyword::self) found_int = true;
-        if (e.text == "return" && e.type == token::keyword::self) found_return = true;
+        if (e.text == "int" && e.type == token::keyword::self) {
+            found_int = true;
+        }
+        if (e.text == "return" && e.type == token::keyword::self) {
+            found_return = true;
+        }
     }
     EXPECT_TRUE(found_int);
     EXPECT_TRUE(found_return);
@@ -36,7 +40,9 @@ TEST(CppLexerTest, Preprocessor) {
 
     bool found_preproc = false;
     for (const auto &e : result) {
-        if (e.type == token::comment::preproc) found_preproc = true;
+        if (e.type == token::comment::preproc) {
+            found_preproc = true;
+        }
     }
     EXPECT_TRUE(found_preproc);
 }
@@ -47,8 +53,12 @@ TEST(CppLexerTest, Comments) {
 
     bool found_single = false, found_multi = false;
     for (const auto &e : result) {
-        if (e.type == token::comment::single) found_single = true;
-        if (e.type == token::comment::multiline) found_multi = true;
+        if (e.type == token::comment::single) {
+            found_single = true;
+        }
+        if (e.type == token::comment::multiline) {
+            found_multi = true;
+        }
     }
     EXPECT_TRUE(found_single);
     EXPECT_TRUE(found_multi);
@@ -84,7 +94,9 @@ TEST(CppLexerTest, Strings) {
 
     bool found_str = false;
     for (const auto &e : result) {
-        if (e.text == "hello" && e.type == token::literal::string::double_) found_str = true;
+        if (e.text == "hello" && e.type == token::literal::string::double_) {
+            found_str = true;
+        }
     }
     EXPECT_TRUE(found_str);
 }
@@ -100,7 +112,9 @@ TEST(CppLexerTest, Lossless) {
     std::string_view src = "int x = 42;\n";
     auto result = lex.tokenize(src);
     std::string reconstructed;
-    for (const auto &e : result) reconstructed.append(e.text);
+    for (const auto &e : result) {
+        reconstructed.append(e.text);
+    }
     EXPECT_EQ(reconstructed, src);
 }
 
@@ -117,9 +131,15 @@ TEST(JsonLexerTest, BasicObject) {
 
     bool found_str = false, found_int = false, found_bool = false;
     for (const auto &e : result) {
-        if (e.text == "key" && e.type == token::literal::string::double_) found_str = true;
-        if (e.text == "42" && e.type == token::literal::number::integer) found_int = true;
-        if (e.text == "true" && e.type == token::keyword::constant) found_bool = true;
+        if (e.text == "key" && e.type == token::literal::string::double_) {
+            found_str = true;
+        }
+        if (e.text == "42" && e.type == token::literal::number::integer) {
+            found_int = true;
+        }
+        if (e.text == "true" && e.type == token::keyword::constant) {
+            found_bool = true;
+        }
     }
     EXPECT_TRUE(found_str);
     EXPECT_TRUE(found_int);
@@ -132,8 +152,12 @@ TEST(JsonLexerTest, FloatAndNull) {
 
     bool found_float = false, found_null = false;
     for (const auto &e : result) {
-        if (e.text == "3.14" && e.type == token::literal::number::float_) found_float = true;
-        if (e.text == "null" && e.type == token::keyword::constant) found_null = true;
+        if (e.text == "3.14" && e.type == token::literal::number::float_) {
+            found_float = true;
+        }
+        if (e.text == "null" && e.type == token::keyword::constant) {
+            found_null = true;
+        }
     }
     EXPECT_TRUE(found_float);
     EXPECT_TRUE(found_null);
@@ -145,7 +169,9 @@ TEST(JsonLexerTest, EscapeSequences) {
 
     bool found_escape = false;
     for (const auto &e : result) {
-        if (e.type == token::literal::string::escape) found_escape = true;
+        if (e.type == token::literal::string::escape) {
+            found_escape = true;
+        }
     }
     EXPECT_TRUE(found_escape);
 }
@@ -155,7 +181,9 @@ TEST(JsonLexerTest, Lossless) {
     std::string_view src = "{\"a\": 1}\n";
     auto result = lex.tokenize(src);
     std::string reconstructed;
-    for (const auto &e : result) reconstructed.append(e.text);
+    for (const auto &e : result) {
+        reconstructed.append(e.text);
+    }
     EXPECT_EQ(reconstructed, src);
 }
 
@@ -172,8 +200,12 @@ TEST(JsLexerTest, Keywords) {
 
     bool found_const = false, found_let = false;
     for (const auto &e : result) {
-        if (e.text == "const" && e.type == token::keyword::self) found_const = true;
-        if (e.text == "let" && e.type == token::keyword::self) found_let = true;
+        if (e.text == "const" && e.type == token::keyword::self) {
+            found_const = true;
+        }
+        if (e.text == "let" && e.type == token::keyword::self) {
+            found_let = true;
+        }
     }
     EXPECT_TRUE(found_const);
     EXPECT_TRUE(found_let);
@@ -185,7 +217,9 @@ TEST(JsLexerTest, ArrowFunction) {
 
     bool found_arrow = false;
     for (const auto &e : result) {
-        if (e.text == "=>" && e.type == token::operator_::self) found_arrow = true;
+        if (e.text == "=>" && e.type == token::operator_::self) {
+            found_arrow = true;
+        }
     }
     EXPECT_TRUE(found_arrow);
 }
@@ -196,7 +230,9 @@ TEST(JsLexerTest, TemplateLiteral) {
 
     bool found_backtick = false;
     for (const auto &e : result) {
-        if (e.type == token::literal::string::backtick) found_backtick = true;
+        if (e.type == token::literal::string::backtick) {
+            found_backtick = true;
+        }
     }
     EXPECT_TRUE(found_backtick);
 }
@@ -207,8 +243,12 @@ TEST(JsLexerTest, Comments) {
 
     bool found_single = false, found_multi = false;
     for (const auto &e : result) {
-        if (e.type == token::comment::single) found_single = true;
-        if (e.type == token::comment::multiline) found_multi = true;
+        if (e.type == token::comment::single) {
+            found_single = true;
+        }
+        if (e.type == token::comment::multiline) {
+            found_multi = true;
+        }
     }
     EXPECT_TRUE(found_single);
     EXPECT_TRUE(found_multi);
@@ -220,8 +260,12 @@ TEST(JsLexerTest, BuiltinObjects) {
 
     bool found_console = false, found_json = false;
     for (const auto &e : result) {
-        if (e.text == "console" && e.type == token::name::builtin) found_console = true;
-        if (e.text == "JSON" && e.type == token::name::builtin) found_json = true;
+        if (e.text == "console" && e.type == token::name::builtin) {
+            found_console = true;
+        }
+        if (e.text == "JSON" && e.type == token::name::builtin) {
+            found_json = true;
+        }
     }
     EXPECT_TRUE(found_console);
     EXPECT_TRUE(found_json);
@@ -238,7 +282,9 @@ TEST(JsLexerTest, Lossless) {
     std::string_view src = "let x = 1;\n";
     auto result = lex.tokenize(src);
     std::string reconstructed;
-    for (const auto &e : result) reconstructed.append(e.text);
+    for (const auto &e : result) {
+        reconstructed.append(e.text);
+    }
     EXPECT_EQ(reconstructed, src);
 }
 

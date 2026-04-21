@@ -23,9 +23,15 @@ const lexer_info &sql_lexer::info() const noexcept {
 
 float sql_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("SELECT") != src.npos || src.find("select") != src.npos) score += 0.3f;
-    if (src.find("FROM") != src.npos || src.find("from") != src.npos) score += 0.1f;
-    if (src.find("CREATE TABLE") != src.npos || src.find("create table") != src.npos) score += 0.4f;
+    if (src.find("SELECT") != src.npos || src.find("select") != src.npos) {
+        score += 0.3f;
+    }
+    if (src.find("FROM") != src.npos || src.find("from") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("CREATE TABLE") != src.npos || src.find("create table") != src.npos) {
+        score += 0.4f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

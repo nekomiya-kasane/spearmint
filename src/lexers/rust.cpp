@@ -23,12 +23,24 @@ const lexer_info &rust_lexer::info() const noexcept {
 
 float rust_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("fn ") != src.npos) score += 0.2f;
-    if (src.find("let ") != src.npos) score += 0.1f;
-    if (src.find("use ") != src.npos) score += 0.1f;
-    if (src.find("impl ") != src.npos) score += 0.2f;
-    if (src.find("->") != src.npos) score += 0.05f;
-    if (src.find("::") != src.npos) score += 0.05f;
+    if (src.find("fn ") != src.npos) {
+        score += 0.2f;
+    }
+    if (src.find("let ") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("use ") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("impl ") != src.npos) {
+        score += 0.2f;
+    }
+    if (src.find("->") != src.npos) {
+        score += 0.05f;
+    }
+    if (src.find("::") != src.npos) {
+        score += 0.05f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

@@ -31,11 +31,21 @@ const lexer_info &python_lexer::info() const noexcept {
 
 float python_lexer::analyse_text(std::string_view source) const noexcept {
     float score = 0.0f;
-    if (source.find("import ") != std::string_view::npos) score += 0.1f;
-    if (source.find("def ") != std::string_view::npos) score += 0.1f;
-    if (source.find("class ") != std::string_view::npos) score += 0.1f;
-    if (source.starts_with("#!/usr/bin/env python") || source.starts_with("#!/usr/bin/python")) score += 0.5f;
-    if (source.find("print(") != std::string_view::npos) score += 0.05f;
+    if (source.find("import ") != std::string_view::npos) {
+        score += 0.1f;
+    }
+    if (source.find("def ") != std::string_view::npos) {
+        score += 0.1f;
+    }
+    if (source.find("class ") != std::string_view::npos) {
+        score += 0.1f;
+    }
+    if (source.starts_with("#!/usr/bin/env python") || source.starts_with("#!/usr/bin/python")) {
+        score += 0.5f;
+    }
+    if (source.find("print(") != std::string_view::npos) {
+        score += 0.05f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

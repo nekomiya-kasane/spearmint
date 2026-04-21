@@ -17,9 +17,15 @@ const lexer_info &toml_lexer::info() const noexcept {
 
 float toml_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("[package]") != src.npos || src.find("[dependencies]") != src.npos) score += 0.5f;
-    if (src.find("[[") != src.npos) score += 0.2f;
-    if (src.find(" = ") != src.npos) score += 0.05f;
+    if (src.find("[package]") != src.npos || src.find("[dependencies]") != src.npos) {
+        score += 0.5f;
+    }
+    if (src.find("[[") != src.npos) {
+        score += 0.2f;
+    }
+    if (src.find(" = ") != src.npos) {
+        score += 0.05f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

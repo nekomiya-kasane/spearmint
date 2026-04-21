@@ -15,7 +15,9 @@ static int depth_of(token_type t) {
     int d = 0;
     const char *p = t.name;
     while (*p) {
-        if (*p == '.') ++d;
+        if (*p == '.') {
+            ++d;
+        }
         ++p;
     }
     return d;
@@ -28,7 +30,9 @@ int main() {
         const auto &t = detail::all_tokens[i];
         int d = depth_of(t);
 
-        for (int j = 0; j < d; ++j) std::fputs("  ", stdout);
+        for (int j = 0; j < d; ++j) {
+            std::fputs("  ", stdout);
+        }
 
         std::printf("[%3u] %s", t.id, t.short_name);
 

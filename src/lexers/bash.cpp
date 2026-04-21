@@ -23,10 +23,15 @@ const lexer_info &bash_lexer::info() const noexcept {
 
 float bash_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.starts_with("#!/bin/bash") || src.starts_with("#!/bin/sh") || src.starts_with("#!/usr/bin/env bash"))
+    if (src.starts_with("#!/bin/bash") || src.starts_with("#!/bin/sh") || src.starts_with("#!/usr/bin/env bash")) {
         score += 0.8f;
-    if (src.find("echo ") != src.npos) score += 0.1f;
-    if (src.find("fi\n") != src.npos || src.find("done\n") != src.npos) score += 0.2f;
+    }
+    if (src.find("echo ") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("fi\n") != src.npos || src.find("done\n") != src.npos) {
+        score += 0.2f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

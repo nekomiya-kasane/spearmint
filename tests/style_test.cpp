@@ -100,9 +100,15 @@ TEST(StyleTest, RegistryGetAllStyles) {
     // Check a few known styles
     bool found_monokai = false, found_dracula = false, found_bw = false;
     for (auto n : names) {
-        if (n == "monokai") found_monokai = true;
-        if (n == "dracula") found_dracula = true;
-        if (n == "bw") found_bw = true;
+        if (n == "monokai") {
+            found_monokai = true;
+        }
+        if (n == "dracula") {
+            found_dracula = true;
+        }
+        if (n == "bw") {
+            found_bw = true;
+        }
     }
     EXPECT_TRUE(found_monokai);
     EXPECT_TRUE(found_dracula);

@@ -11,7 +11,9 @@ namespace spearmint::filters {
 
 SPEARMINT_API token_filter merge_consecutive() {
     return [](const token_stream &ts) -> token_stream {
-        if (ts.empty()) return {};
+        if (ts.empty()) {
+            return {};
+        }
         token_stream out;
         out.reserve(ts.size());
         out.push_back(ts[0]);
@@ -41,7 +43,9 @@ SPEARMINT_API token_filter strip_whitespace() {
         token_stream out;
         out.reserve(ts.size());
         for (const auto &e : ts) {
-            if (e.type == token::whitespace) continue;
+            if (e.type == token::whitespace) {
+                continue;
+            }
             // Also skip if text is all whitespace
             bool all_ws = true;
             for (char c : e.text) {
@@ -50,7 +54,9 @@ SPEARMINT_API token_filter strip_whitespace() {
                     break;
                 }
             }
-            if (!all_ws) out.push_back(e);
+            if (!all_ws) {
+                out.push_back(e);
+            }
         }
         return out;
     };
@@ -61,7 +67,9 @@ SPEARMINT_API token_filter remove_token(token_type type) {
         token_stream out;
         out.reserve(ts.size());
         for (const auto &e : ts) {
-            if (!(e.type == type)) out.push_back(e);
+            if (!(e.type == type)) {
+                out.push_back(e);
+            }
         }
         return out;
     };
@@ -88,10 +96,11 @@ SPEARMINT_API token_filter remap_token(token_type from, token_type to) {
         token_stream out;
         out.reserve(ts.size());
         for (const auto &e : ts) {
-            if (e.type == from)
+            if (e.type == from) {
                 out.push_back({to, e.text});
-            else
+            } else {
                 out.push_back(e);
+            }
         }
         return out;
     };
@@ -102,10 +111,11 @@ SPEARMINT_API token_filter remap_if(std::function<bool(const token_entry &)> pre
         token_stream out;
         out.reserve(ts.size());
         for (const auto &e : ts) {
-            if (pred(e))
+            if (pred(e)) {
                 out.push_back({new_type, e.text});
-            else
+            } else {
                 out.push_back(e);
+            }
         }
         return out;
     };
@@ -113,13 +123,19 @@ SPEARMINT_API token_filter remap_if(std::function<bool(const token_entry &)> pre
 
 SPEARMINT_API token_filter trim() {
     return [](const token_stream &ts) -> token_stream {
-        if (ts.empty()) return {};
+        if (ts.empty()) {
+            return {};
+        }
 
         std::size_t start = 0;
-        while (start < ts.size() && ts[start].type == token::whitespace) ++start;
+        while (start < ts.size() && ts[start].type == token::whitespace) {
+            ++start;
+        }
 
         std::size_t end = ts.size();
-        while (end > start && ts[end - 1].type == token::whitespace) --end;
+        while (end > start && ts[end - 1].type == token::whitespace) {
+            --end;
+        }
 
         return token_stream(ts.begin() + static_cast<std::ptrdiff_t>(start),
                             ts.begin() + static_cast<std::ptrdiff_t>(end));

@@ -31,14 +31,30 @@ const lexer_info &javascript_lexer::info() const noexcept {
 
 float javascript_lexer::analyse_text(std::string_view source) const noexcept {
     float score = 0.0f;
-    if (source.find("function ") != std::string_view::npos) score += 0.1f;
-    if (source.find("const ") != std::string_view::npos) score += 0.05f;
-    if (source.find("let ") != std::string_view::npos) score += 0.05f;
-    if (source.find("var ") != std::string_view::npos) score += 0.05f;
-    if (source.find("=>") != std::string_view::npos) score += 0.1f;
-    if (source.find("console.log") != std::string_view::npos) score += 0.15f;
-    if (source.find("require(") != std::string_view::npos) score += 0.1f;
-    if (source.find("import ") != std::string_view::npos) score += 0.05f;
+    if (source.find("function ") != std::string_view::npos) {
+        score += 0.1f;
+    }
+    if (source.find("const ") != std::string_view::npos) {
+        score += 0.05f;
+    }
+    if (source.find("let ") != std::string_view::npos) {
+        score += 0.05f;
+    }
+    if (source.find("var ") != std::string_view::npos) {
+        score += 0.05f;
+    }
+    if (source.find("=>") != std::string_view::npos) {
+        score += 0.1f;
+    }
+    if (source.find("console.log") != std::string_view::npos) {
+        score += 0.15f;
+    }
+    if (source.find("require(") != std::string_view::npos) {
+        score += 0.1f;
+    }
+    if (source.find("import ") != std::string_view::npos) {
+        score += 0.05f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

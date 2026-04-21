@@ -23,9 +23,15 @@ const lexer_info &html_lexer::info() const noexcept {
 
 float html_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("<!DOCTYPE") != src.npos || src.find("<!doctype") != src.npos) score += 0.5f;
-    if (src.find("<html") != src.npos) score += 0.3f;
-    if (src.find("<div") != src.npos || src.find("<span") != src.npos) score += 0.1f;
+    if (src.find("<!DOCTYPE") != src.npos || src.find("<!doctype") != src.npos) {
+        score += 0.5f;
+    }
+    if (src.find("<html") != src.npos) {
+        score += 0.3f;
+    }
+    if (src.find("<div") != src.npos || src.find("<span") != src.npos) {
+        score += 0.1f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

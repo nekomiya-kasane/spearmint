@@ -23,9 +23,15 @@ const lexer_info &java_lexer::info() const noexcept {
 
 float java_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("public class ") != src.npos) score += 0.4f;
-    if (src.find("import java.") != src.npos) score += 0.3f;
-    if (src.find("System.out.") != src.npos) score += 0.2f;
+    if (src.find("public class ") != src.npos) {
+        score += 0.4f;
+    }
+    if (src.find("import java.") != src.npos) {
+        score += 0.3f;
+    }
+    if (src.find("System.out.") != src.npos) {
+        score += 0.2f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

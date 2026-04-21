@@ -31,15 +31,21 @@ std::string ansi_exporter::format(const token_stream &tokens, const style_def_vi
             }
 
             if (rule->bold && opts_.bold) {
-                if (!sgr.empty()) sgr += ";";
+                if (!sgr.empty()) {
+                    sgr += ";";
+                }
                 sgr += "1";
             }
             if (rule->italic && opts_.italic) {
-                if (!sgr.empty()) sgr += ";";
+                if (!sgr.empty()) {
+                    sgr += ";";
+                }
                 sgr += "3";
             }
             if (rule->underline && opts_.underline) {
-                if (!sgr.empty()) sgr += ";";
+                if (!sgr.empty()) {
+                    sgr += ";";
+                }
                 sgr += "4";
             }
 

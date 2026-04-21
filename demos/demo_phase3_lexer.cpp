@@ -96,7 +96,9 @@ int main() {
                 break;
             }
         }
-        if (all_ws) continue;
+        if (all_ws) {
+            continue;
+        }
 
         const auto *rule = style->lookup(entry.type);
         std::printf("%-35s ", entry.type.name);
@@ -105,24 +107,27 @@ int main() {
         } else {
             std::printf("        ");
         }
-        if (rule && rule->bold)
+        if (rule && rule->bold) {
             std::printf("B ");
-        else
+        } else {
             std::printf("  ");
-        if (rule && rule->italic)
+        }
+        if (rule && rule->italic) {
             std::printf("I ");
-        else
+        } else {
             std::printf("  ");
+        }
 
         // Print text, replacing newlines
         std::printf("| ");
         for (char c : entry.text) {
-            if (c == '\n')
+            if (c == '\n') {
                 std::printf("\\n");
-            else if (c == '\t')
+            } else if (c == '\t') {
                 std::printf("\\t");
-            else
+            } else {
                 std::putchar(c);
+            }
         }
         std::putchar('\n');
     }

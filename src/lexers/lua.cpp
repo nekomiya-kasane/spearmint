@@ -23,11 +23,21 @@ const lexer_info &lua_lexer::info() const noexcept {
 
 float lua_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("local ") != src.npos) score += 0.2f;
-    if (src.find("function ") != src.npos) score += 0.1f;
-    if (src.find("end\n") != src.npos) score += 0.1f;
-    if (src.find("then\n") != src.npos || src.find("then ") != src.npos) score += 0.2f;
-    if (src.find("require(") != src.npos || src.find("require \"") != src.npos) score += 0.2f;
+    if (src.find("local ") != src.npos) {
+        score += 0.2f;
+    }
+    if (src.find("function ") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("end\n") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("then\n") != src.npos || src.find("then ") != src.npos) {
+        score += 0.2f;
+    }
+    if (src.find("require(") != src.npos || src.find("require \"") != src.npos) {
+        score += 0.2f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

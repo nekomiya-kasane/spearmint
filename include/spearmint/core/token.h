@@ -459,13 +459,21 @@ inline constexpr std::array<token_type, token_count> token_table = {{
 // ── is_child_of implementation ─────────────────────────────────────────
 
 constexpr bool token_type::is_child_of(token_type other) const noexcept {
-    if (id == other.id) return true;
+    if (id == other.id) {
+        return true;
+    }
     uint32_t cur = id;
     for (int depth = 0; depth < 8; ++depth) {
-        if (cur >= detail::token_count) return false;
+        if (cur >= detail::token_count) {
+            return false;
+        }
         uint32_t pid = detail::token_table[cur].parent_id;
-        if (pid == other.id) return true;
-        if (pid == cur) return false; // reached root
+        if (pid == other.id) {
+            return true;
+        }
+        if (pid == cur) {
+            return false; // reached root
+        }
         cur = pid;
     }
     return false;

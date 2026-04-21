@@ -17,9 +17,15 @@ const lexer_info &makefile_lexer::info() const noexcept {
 
 float makefile_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("\t") != src.npos && src.find(":") != src.npos) score += 0.2f;
-    if (src.find("$(") != src.npos) score += 0.2f;
-    if (src.find(".PHONY") != src.npos) score += 0.5f;
+    if (src.find("\t") != src.npos && src.find(":") != src.npos) {
+        score += 0.2f;
+    }
+    if (src.find("$(") != src.npos) {
+        score += 0.2f;
+    }
+    if (src.find(".PHONY") != src.npos) {
+        score += 0.5f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

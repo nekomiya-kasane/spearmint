@@ -23,10 +23,18 @@ const lexer_info &kotlin_lexer::info() const noexcept {
 
 float kotlin_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("fun ") != src.npos) score += 0.3f;
-    if (src.find("val ") != src.npos || src.find("var ") != src.npos) score += 0.1f;
-    if (src.find("package ") != src.npos) score += 0.1f;
-    if (src.find("println(") != src.npos) score += 0.2f;
+    if (src.find("fun ") != src.npos) {
+        score += 0.3f;
+    }
+    if (src.find("val ") != src.npos || src.find("var ") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("package ") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("println(") != src.npos) {
+        score += 0.2f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

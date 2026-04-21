@@ -25,11 +25,21 @@ const lexer_info &cpp_lexer::info() const noexcept {
 
 float cpp_lexer::analyse_text(std::string_view source) const noexcept {
     float score = 0.0f;
-    if (source.find("#include") != std::string_view::npos) score += 0.2f;
-    if (source.find("int main") != std::string_view::npos) score += 0.2f;
-    if (source.find("std::") != std::string_view::npos) score += 0.15f;
-    if (source.find("namespace") != std::string_view::npos) score += 0.1f;
-    if (source.find("template") != std::string_view::npos) score += 0.1f;
+    if (source.find("#include") != std::string_view::npos) {
+        score += 0.2f;
+    }
+    if (source.find("int main") != std::string_view::npos) {
+        score += 0.2f;
+    }
+    if (source.find("std::") != std::string_view::npos) {
+        score += 0.15f;
+    }
+    if (source.find("namespace") != std::string_view::npos) {
+        score += 0.1f;
+    }
+    if (source.find("template") != std::string_view::npos) {
+        score += 0.1f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

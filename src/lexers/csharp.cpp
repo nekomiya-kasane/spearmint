@@ -23,9 +23,15 @@ const lexer_info &csharp_lexer::info() const noexcept {
 
 float csharp_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("using System") != src.npos) score += 0.4f;
-    if (src.find("namespace ") != src.npos) score += 0.1f;
-    if (src.find("Console.") != src.npos) score += 0.2f;
+    if (src.find("using System") != src.npos) {
+        score += 0.4f;
+    }
+    if (src.find("namespace ") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("Console.") != src.npos) {
+        score += 0.2f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

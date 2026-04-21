@@ -23,9 +23,15 @@ const lexer_info &xml_lexer::info() const noexcept {
 
 float xml_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("<?xml") != src.npos) score += 0.5f;
-    if (src.find("xmlns") != src.npos) score += 0.2f;
-    if (src.find("</") != src.npos) score += 0.1f;
+    if (src.find("<?xml") != src.npos) {
+        score += 0.5f;
+    }
+    if (src.find("xmlns") != src.npos) {
+        score += 0.2f;
+    }
+    if (src.find("</") != src.npos) {
+        score += 0.1f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

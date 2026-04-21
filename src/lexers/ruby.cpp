@@ -23,11 +23,21 @@ const lexer_info &ruby_lexer::info() const noexcept {
 
 float ruby_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
-    if (src.find("def ") != src.npos) score += 0.2f;
-    if (src.find("end\n") != src.npos || src.find("end ") != src.npos) score += 0.1f;
-    if (src.find("require ") != src.npos) score += 0.2f;
-    if (src.find("puts ") != src.npos) score += 0.1f;
-    if (src.find("attr_") != src.npos) score += 0.2f;
+    if (src.find("def ") != src.npos) {
+        score += 0.2f;
+    }
+    if (src.find("end\n") != src.npos || src.find("end ") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("require ") != src.npos) {
+        score += 0.2f;
+    }
+    if (src.find("puts ") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("attr_") != src.npos) {
+        score += 0.2f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

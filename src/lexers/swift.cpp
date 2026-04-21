@@ -24,11 +24,18 @@ const lexer_info &swift_lexer::info() const noexcept {
 float swift_lexer::analyse_text(std::string_view src) const noexcept {
     float score = 0.0f;
     if (src.find("import Foundation") != src.npos || src.find("import UIKit") != src.npos ||
-        src.find("import SwiftUI") != src.npos)
+        src.find("import SwiftUI") != src.npos) {
         score += 0.5f;
-    if (src.find("func ") != src.npos) score += 0.1f;
-    if (src.find("let ") != src.npos || src.find("var ") != src.npos) score += 0.05f;
-    if (src.find("guard ") != src.npos) score += 0.3f;
+    }
+    if (src.find("func ") != src.npos) {
+        score += 0.1f;
+    }
+    if (src.find("let ") != src.npos || src.find("var ") != src.npos) {
+        score += 0.05f;
+    }
+    if (src.find("guard ") != src.npos) {
+        score += 0.3f;
+    }
     return score > 1.0f ? 1.0f : score;
 }
 

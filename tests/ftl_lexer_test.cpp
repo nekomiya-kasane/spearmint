@@ -50,9 +50,15 @@ TEST_F(FtlLexerTest, simple_message) {
     bool has_operator = false;
     bool has_string = false;
     for (const auto &tok : result.tokens) {
-        if (tok.type == token::name::variable) has_name = true;
-        if (tok.type == token::operator_::self) has_operator = true;
-        if (tok.type == token::literal::string::self) has_string = true;
+        if (tok.type == token::name::variable) {
+            has_name = true;
+        }
+        if (tok.type == token::operator_::self) {
+            has_operator = true;
+        }
+        if (tok.type == token::literal::string::self) {
+            has_string = true;
+        }
     }
     EXPECT_TRUE(has_name);
     EXPECT_TRUE(has_operator);
@@ -67,7 +73,9 @@ TEST_F(FtlLexerTest, comments) {
 
     int comment_count = 0;
     for (const auto &tok : result.tokens) {
-        if (tok.type == token::comment::single || tok.type == token::comment::special) ++comment_count;
+        if (tok.type == token::comment::single || tok.type == token::comment::special) {
+            ++comment_count;
+        }
     }
     EXPECT_EQ(comment_count, 3);
 }
@@ -80,7 +88,9 @@ TEST_F(FtlLexerTest, term_definition) {
 
     bool has_term = false;
     for (const auto &tok : result.tokens) {
-        if (tok.type == token::name::function && tok.text.find("-brand") != std::string_view::npos) has_term = true;
+        if (tok.type == token::name::function && tok.text.find("-brand") != std::string_view::npos) {
+            has_term = true;
+        }
     }
     EXPECT_TRUE(has_term);
 }
@@ -95,9 +105,15 @@ TEST_F(FtlLexerTest, placeable_variable) {
     bool has_open_brace = false;
     bool has_close_brace = false;
     for (const auto &tok : result.tokens) {
-        if (tok.type == token::name::variable && tok.text.find("$name") != std::string_view::npos) has_var = true;
-        if (tok.type == token::punctuation::self && tok.text == "{") has_open_brace = true;
-        if (tok.type == token::punctuation::self && tok.text == "}") has_close_brace = true;
+        if (tok.type == token::name::variable && tok.text.find("$name") != std::string_view::npos) {
+            has_var = true;
+        }
+        if (tok.type == token::punctuation::self && tok.text == "{") {
+            has_open_brace = true;
+        }
+        if (tok.type == token::punctuation::self && tok.text == "}") {
+            has_close_brace = true;
+        }
     }
     EXPECT_TRUE(has_var);
     EXPECT_TRUE(has_open_brace);
@@ -112,7 +128,9 @@ TEST_F(FtlLexerTest, placeable_term_ref) {
 
     bool has_term_ref = false;
     for (const auto &tok : result.tokens) {
-        if (tok.type == token::name::function && tok.text.find("-brand") != std::string_view::npos) has_term_ref = true;
+        if (tok.type == token::name::function && tok.text.find("-brand") != std::string_view::npos) {
+            has_term_ref = true;
+        }
     }
     EXPECT_TRUE(has_term_ref);
 }
@@ -125,7 +143,9 @@ TEST_F(FtlLexerTest, attribute) {
 
     int attr_count = 0;
     for (const auto &tok : result.tokens) {
-        if (tok.type == token::name::attribute) ++attr_count;
+        if (tok.type == token::name::attribute) {
+            ++attr_count;
+        }
     }
     EXPECT_GE(attr_count, 2);
 }
@@ -142,8 +162,12 @@ TEST_F(FtlLexerTest, selector_variants) {
     bool has_arrow = false;
     bool has_keyword = false;
     for (const auto &tok : result.tokens) {
-        if (tok.type == token::operator_::self && tok.text == "->") has_arrow = true;
-        if (tok.type == token::keyword::self) has_keyword = true;
+        if (tok.type == token::operator_::self && tok.text == "->") {
+            has_arrow = true;
+        }
+        if (tok.type == token::keyword::self) {
+            has_keyword = true;
+        }
     }
     EXPECT_TRUE(has_arrow);
     EXPECT_TRUE(has_keyword);
@@ -157,7 +181,9 @@ TEST_F(FtlLexerTest, function_call) {
 
     bool has_func = false;
     for (const auto &tok : result.tokens) {
-        if (tok.type == token::name::builtin && tok.text.find("DATETIME") != std::string_view::npos) has_func = true;
+        if (tok.type == token::name::builtin && tok.text.find("DATETIME") != std::string_view::npos) {
+            has_func = true;
+        }
     }
     EXPECT_TRUE(has_func);
 }
@@ -170,7 +196,9 @@ TEST_F(FtlLexerTest, number_literal) {
 
     bool has_number = false;
     for (const auto &tok : result.tokens) {
-        if (tok.type == token::literal::number::float_) has_number = true;
+        if (tok.type == token::literal::number::float_) {
+            has_number = true;
+        }
     }
     EXPECT_TRUE(has_number);
 }

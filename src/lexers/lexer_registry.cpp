@@ -48,9 +48,13 @@ SPEARMINT_API std::unique_ptr<lexer> get_lexer_by_name(std::string_view name) {
     auto &reg = get_registry();
     std::lock_guard lock(reg.mtx);
     for (const auto &e : reg.entries) {
-        if (name == e.info->name) return e.factory();
+        if (name == e.info->name) {
+            return e.factory();
+        }
         for (const auto &alias : e.info->aliases) {
-            if (name == alias) return e.factory();
+            if (name == alias) {
+                return e.factory();
+            }
         }
     }
     return nullptr;
@@ -81,7 +85,9 @@ SPEARMINT_API std::unique_ptr<lexer> get_lexer_by_mime(std::string_view mime) {
     std::lock_guard lock(reg.mtx);
     for (const auto &e : reg.entries) {
         for (const auto &m : e.info->mime_types) {
-            if (mime == m) return e.factory();
+            if (mime == m) {
+                return e.factory();
+            }
         }
     }
     return nullptr;
