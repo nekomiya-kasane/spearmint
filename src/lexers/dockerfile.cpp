@@ -28,27 +28,27 @@ state_map dockerfile_lexer::get_rules() const {
     namespace tk = token;
     state_map rules;
     rules["root"] = {
-        {R"(\s+)", tk::whitespace, state_action::none()},
-        {R"(#[^\n]*)", tk::comment::single, state_action::none()},
-        {R"(\b(?i)(FROM|AS|MAINTAINER|RUN|CMD|LABEL|EXPOSE|ENV|ADD|COPY|ENTRYPOINT|VOLUME|USER|WORKDIR|ARG|ONBUILD|STOPSIGNAL|HEALTHCHECK|SHELL)\b)",
-         tk::keyword::self, state_action::none()},
-        {R"(\$\{[^}]+\})", tk::name::variable, state_action::none()},
-        {R"(\$[a-zA-Z_]\w*)", tk::name::variable, state_action::none()},
-        {R"(")", tk::literal::string::double_, state_action::push_state("string")},
-        {R"('[^']*')", tk::literal::string::single, state_action::none()},
-        {R"([0-9]+)", tk::literal::number::integer, state_action::none()},
-        {R"(\\$)", tk::punctuation::self, state_action::none()},
-        {R"(&&|\|\||[|;])", tk::operator_::self, state_action::none()},
-        {R"([\[\]=:])", tk::punctuation::self, state_action::none()},
-        {R"([^\s#"'$\\\[\]=:;|&]+)", tk::text, state_action::none()},
+        {.pattern = R"(\s+)", .token = tk::whitespace, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(#[^\n]*)", .token = tk::comment::single, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(\b(?i)(FROM|AS|MAINTAINER|RUN|CMD|LABEL|EXPOSE|ENV|ADD|COPY|ENTRYPOINT|VOLUME|USER|WORKDIR|ARG|ONBUILD|STOPSIGNAL|HEALTHCHECK|SHELL)\b)",
+         .token = tk::keyword::self, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(\$\{[^}]+\})", .token = tk::name::variable, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(\$[a-zA-Z_]\w*)", .token = tk::name::variable, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(")", .token = tk::literal::string::double_, .action = state_action::push_state("string"), .group_tokens = {}},
+        {.pattern = R"('[^']*')", .token = tk::literal::string::single, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"([0-9]+)", .token = tk::literal::number::integer, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(\\$)", .token = tk::punctuation::self, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(&&|\|\||[|;])", .token = tk::operator_::self, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"([\[\]=:])", .token = tk::punctuation::self, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"([^\s#"'$\\\[\]=:;|&]+)", .token = tk::text, .action = state_action::none(), .group_tokens = {}},
     };
     rules["string"] = {
-        {R"(\\[\\"])", tk::literal::string::escape, state_action::none()},
-        {R"(\$\{[^}]+\})", tk::name::variable, state_action::none()},
-        {R"(\$[a-zA-Z_]\w*)", tk::name::variable, state_action::none()},
-        {R"(")", tk::literal::string::double_, state_action::pop_state()},
-        {R"([^"\\$]+)", tk::literal::string::double_, state_action::none()},
-        {R"([$\\])", tk::literal::string::double_, state_action::none()},
+        {.pattern = R"(\\[\\"])", .token = tk::literal::string::escape, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(\$\{[^}]+\})", .token = tk::name::variable, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(\$[a-zA-Z_]\w*)", .token = tk::name::variable, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(")", .token = tk::literal::string::double_, .action = state_action::pop_state(), .group_tokens = {}},
+        {.pattern = R"([^"\\$]+)", .token = tk::literal::string::double_, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"([$\\])", .token = tk::literal::string::double_, .action = state_action::none(), .group_tokens = {}},
     };
     return rules;
 }

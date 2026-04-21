@@ -28,30 +28,60 @@ state_map json_lexer::get_rules() const {
     state_map rules;
 
     rules["root"] = {
-        {R"(\n)", tk::whitespace, state_action::none()},
-        {R"([ \t\r]+)", tk::whitespace, state_action::none()},
+        {.pattern = R"(\n)", .token = tk::whitespace, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"([ \t\r]+)", .token = tk::whitespace, .action = state_action::none(), .group_tokens = {}},
 
         // Strings (keys and values)
-        {R"(")", tk::literal::string::double_, state_action::push_state("string")},
+        {.pattern = R"(")",
+         .token = tk::literal::string::double_,
+         .action = state_action::push_state("string"),
+         .group_tokens = {}},
 
         // Boolean / null
-        {R"(\b(?:true|false)\b)", tk::keyword::constant, state_action::none()},
-        {R"(\bnull\b)", tk::keyword::constant, state_action::none()},
+        {.pattern = R"(\b(?:true|false)\b)",
+         .token = tk::keyword::constant,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\bnull\b)", .token = tk::keyword::constant, .action = state_action::none(), .group_tokens = {}},
 
         // Numbers
-        {R"(-?\d+\.\d+(?:[eE][+-]?\d+)?)", tk::literal::number::float_, state_action::none()},
-        {R"(-?\d+[eE][+-]?\d+)", tk::literal::number::float_, state_action::none()},
-        {R"(-?\d+)", tk::literal::number::integer, state_action::none()},
+        {.pattern = R"(-?\d+\.\d+(?:[eE][+-]?\d+)?)",
+         .token = tk::literal::number::float_,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(-?\d+[eE][+-]?\d+)",
+         .token = tk::literal::number::float_,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(-?\d+)",
+         .token = tk::literal::number::integer,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Punctuation
-        {R"([\[\]{}:,])", tk::punctuation::self, state_action::none()},
+        {.pattern = R"([\[\]{}:,])",
+         .token = tk::punctuation::self,
+         .action = state_action::none(),
+         .group_tokens = {}},
     };
 
     rules["string"] = {
-        {R"(\\[\\"/bfnrt])", tk::literal::string::escape, state_action::none()},
-        {R"(\\u[0-9a-fA-F]{4})", tk::literal::string::escape, state_action::none()},
-        {R"(")", tk::literal::string::double_, state_action::pop_state()},
-        {R"([^"\\]+)", tk::literal::string::double_, state_action::none()},
+        {.pattern = R"(\\[\\"/bfnrt])",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\\u[0-9a-fA-F]{4})",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(")",
+         .token = tk::literal::string::double_,
+         .action = state_action::pop_state(),
+         .group_tokens = {}},
+        {.pattern = R"([^"\\]+)",
+         .token = tk::literal::string::double_,
+         .action = state_action::none(),
+         .group_tokens = {}},
     };
 
     return rules;

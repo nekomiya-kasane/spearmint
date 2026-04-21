@@ -7,7 +7,13 @@ constexpr const char *aliases[] = {"sql"};
 constexpr const char *filenames[] = {"*.sql"};
 constexpr const char *mimes[] = {"text/x-sql"};
 const lexer_info sql_info = {
-    "sql", "SQL", {aliases}, {filenames}, {mimes}, "https://en.wikipedia.org/wiki/SQL", 10,
+    .name = "sql",
+    .display_name = "SQL",
+    .aliases = {aliases},
+    .filenames = {filenames},
+    .mime_types = {mimes},
+    .url = "https://en.wikipedia.org/wiki/SQL",
+    .priority = 10,
 };
 } // namespace
 
@@ -27,33 +33,41 @@ state_map sql_lexer::get_rules() const {
     namespace tk = token;
     state_map rules;
     rules["root"] = {
-        {R"(\s+)", tk::whitespace, state_action::none()},
-        {R"(--[^\n]*)", tk::comment::single, state_action::none()},
-        {R"(/\*)", tk::comment::multiline, state_action::push_state("comment")},
-        {R"(\b(?i)(SELECT|FROM|WHERE|INSERT|INTO|UPDATE|DELETE|CREATE|DROP|ALTER|TABLE|INDEX|VIEW|DATABASE|SCHEMA|GRANT|REVOKE|SET|SHOW|DESCRIBE|EXPLAIN|USE|BEGIN|COMMIT|ROLLBACK|SAVEPOINT|TRUNCATE|MERGE|REPLACE|CALL|EXECUTE|EXEC|WITH|RECURSIVE|UNION|INTERSECT|EXCEPT|ALL|DISTINCT|AS|ON|JOIN|INNER|LEFT|RIGHT|FULL|OUTER|CROSS|NATURAL|USING|GROUP|BY|ORDER|HAVING|LIMIT|OFFSET|FETCH|NEXT|ROWS|ONLY|ASC|DESC|CASE|WHEN|THEN|ELSE|END|IF|WHILE|LOOP|FOR|RETURN|DECLARE|CURSOR|OPEN|CLOSE|FETCH|INTO|PROCEDURE|FUNCTION|TRIGGER|EXISTS|IN|BETWEEN|LIKE|IS|NOT|AND|OR|NULL|TRUE|FALSE|VALUES|DEFAULT|PRIMARY|KEY|FOREIGN|REFERENCES|UNIQUE|CHECK|CONSTRAINT|ADD|COLUMN|RENAME|TO|CASCADE|RESTRICT|NO|ACTION)\b)",
-         tk::keyword::self, state_action::none()},
-        {R"(\b(?i)(INT|INTEGER|BIGINT|SMALLINT|TINYINT|FLOAT|DOUBLE|DECIMAL|NUMERIC|REAL|CHAR|VARCHAR|TEXT|NCHAR|NVARCHAR|NTEXT|BLOB|CLOB|DATE|TIME|TIMESTAMP|DATETIME|BOOLEAN|BOOL|SERIAL|BIGSERIAL|UUID|JSON|JSONB|XML|ARRAY|BINARY|VARBINARY|BIT)\b)",
-         tk::keyword::type, state_action::none()},
-        {R"(\b(?i)(COUNT|SUM|AVG|MIN|MAX|COALESCE|NULLIF|CAST|CONVERT|SUBSTRING|TRIM|UPPER|LOWER|LENGTH|CONCAT|REPLACE|ROUND|FLOOR|CEIL|ABS|NOW|CURRENT_DATE|CURRENT_TIME|CURRENT_TIMESTAMP|EXTRACT|DATE_PART|ROW_NUMBER|RANK|DENSE_RANK|NTILE|LAG|LEAD|FIRST_VALUE|LAST_VALUE)\b)",
-         tk::name::builtin, state_action::none()},
-        {R"([0-9]+\.[0-9]+([eE][+-]?[0-9]+)?)", tk::literal::number::float_, state_action::none()},
-        {R"([0-9]+)", tk::literal::number::integer, state_action::none()},
-        {R"(')", tk::literal::string::single, state_action::push_state("string")},
-        {R"("[^"]*")", tk::name::self, state_action::none()},
-        {R"(`[^`]*`)", tk::name::self, state_action::none()},
-        {R"([+\-*/%=<>!]=?|<>|\|\|)", tk::operator_::self, state_action::none()},
-        {R"([\[\](){}.,;:@])", tk::punctuation::self, state_action::none()},
-        {R"([a-zA-Z_]\w*)", tk::name::self, state_action::none()},
+        {.pattern = R"(\s+)", .token = tk::whitespace, .action = state_action::none()},
+        {.pattern = R"(--[^\n]*)", .token = tk::comment::single, .action = state_action::none()},
+        {.pattern = R"(/\*)", .token = tk::comment::multiline, .action = state_action::push_state("comment")},
+        {.pattern =
+             R"(\b(?i)(SELECT|FROM|WHERE|INSERT|INTO|UPDATE|DELETE|CREATE|DROP|ALTER|TABLE|INDEX|VIEW|DATABASE|SCHEMA|GRANT|REVOKE|SET|SHOW|DESCRIBE|EXPLAIN|USE|BEGIN|COMMIT|ROLLBACK|SAVEPOINT|TRUNCATE|MERGE|REPLACE|CALL|EXECUTE|EXEC|WITH|RECURSIVE|UNION|INTERSECT|EXCEPT|ALL|DISTINCT|AS|ON|JOIN|INNER|LEFT|RIGHT|FULL|OUTER|CROSS|NATURAL|USING|GROUP|BY|ORDER|HAVING|LIMIT|OFFSET|FETCH|NEXT|ROWS|ONLY|ASC|DESC|CASE|WHEN|THEN|ELSE|END|IF|WHILE|LOOP|FOR|RETURN|DECLARE|CURSOR|OPEN|CLOSE|FETCH|INTO|PROCEDURE|FUNCTION|TRIGGER|EXISTS|IN|BETWEEN|LIKE|IS|NOT|AND|OR|NULL|TRUE|FALSE|VALUES|DEFAULT|PRIMARY|KEY|FOREIGN|REFERENCES|UNIQUE|CHECK|CONSTRAINT|ADD|COLUMN|RENAME|TO|CASCADE|RESTRICT|NO|ACTION)\b)",
+         .token = tk::keyword::self,
+         .action = state_action::none()},
+        {.pattern =
+             R"(\b(?i)(INT|INTEGER|BIGINT|SMALLINT|TINYINT|FLOAT|DOUBLE|DECIMAL|NUMERIC|REAL|CHAR|VARCHAR|TEXT|NCHAR|NVARCHAR|NTEXT|BLOB|CLOB|DATE|TIME|TIMESTAMP|DATETIME|BOOLEAN|BOOL|SERIAL|BIGSERIAL|UUID|JSON|JSONB|XML|ARRAY|BINARY|VARBINARY|BIT)\b)",
+         .token = tk::keyword::type,
+         .action = state_action::none()},
+        {.pattern =
+             R"(\b(?i)(COUNT|SUM|AVG|MIN|MAX|COALESCE|NULLIF|CAST|CONVERT|SUBSTRING|TRIM|UPPER|LOWER|LENGTH|CONCAT|REPLACE|ROUND|FLOOR|CEIL|ABS|NOW|CURRENT_DATE|CURRENT_TIME|CURRENT_TIMESTAMP|EXTRACT|DATE_PART|ROW_NUMBER|RANK|DENSE_RANK|NTILE|LAG|LEAD|FIRST_VALUE|LAST_VALUE)\b)",
+         .token = tk::name::builtin,
+         .action = state_action::none()},
+        {.pattern = R"([0-9]+\.[0-9]+([eE][+-]?[0-9]+)?)",
+         .token = tk::literal::number::float_,
+         .action = state_action::none()},
+        {.pattern = R"([0-9]+)", .token = tk::literal::number::integer, .action = state_action::none()},
+        {.pattern = R"(')", .token = tk::literal::string::single, .action = state_action::push_state("string")},
+        {.pattern = R"("[^"]*")", .token = tk::name::self, .action = state_action::none()},
+        {.pattern = R"(`[^`]*`)", .token = tk::name::self, .action = state_action::none()},
+        {.pattern = R"([+\-*/%=<>!]=?|<>|\|\|)", .token = tk::operator_::self, .action = state_action::none()},
+        {.pattern = R"([\[\](){}.,;:@])", .token = tk::punctuation::self, .action = state_action::none()},
+        {.pattern = R"([a-zA-Z_]\w*)", .token = tk::name::self, .action = state_action::none()},
     };
     rules["comment"] = {
-        {R"(\*/)", tk::comment::multiline, state_action::pop_state()},
-        {R"([^*]+)", tk::comment::multiline, state_action::none()},
-        {R"(\*)", tk::comment::multiline, state_action::none()},
+        {.pattern = R"(\*/)", .token = tk::comment::multiline, .action = state_action::pop_state()},
+        {.pattern = R"([^*]+)", .token = tk::comment::multiline, .action = state_action::none()},
+        {.pattern = R"(\*)", .token = tk::comment::multiline, .action = state_action::none()},
     };
     rules["string"] = {
-        {R"('')", tk::literal::string::escape, state_action::none()},
-        {R"(')", tk::literal::string::single, state_action::pop_state()},
-        {R"([^']+)", tk::literal::string::single, state_action::none()},
+        {.pattern = R"('')", .token = tk::literal::string::escape, .action = state_action::none()},
+        {.pattern = R"(')", .token = tk::literal::string::single, .action = state_action::pop_state()},
+        {.pattern = R"([^']+)", .token = tk::literal::string::single, .action = state_action::none()},
     };
     return rules;
 }

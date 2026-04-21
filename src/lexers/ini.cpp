@@ -7,7 +7,13 @@ constexpr const char *aliases[] = {"ini", "cfg", "dosini"};
 constexpr const char *filenames[] = {"*.ini", "*.cfg", "*.conf", ".editorconfig", ".gitconfig"};
 constexpr const char *mimes[] = {"text/x-ini"};
 const lexer_info ini_info = {
-    "ini", "INI", {aliases}, {filenames}, {mimes}, "", 10,
+    .name = "ini",
+    .display_name = "INI",
+    .aliases = {aliases},
+    .filenames = {filenames},
+    .mime_types = {mimes},
+    .url = "",
+    .priority = 10,
 };
 } // namespace
 
@@ -26,17 +32,38 @@ state_map ini_lexer::get_rules() const {
     namespace tk = token;
     state_map rules;
     rules["root"] = {
-        {R"(\s+)", tk::whitespace, state_action::none()},
-        {R"([;#][^\n]*)", tk::comment::single, state_action::none()},
-        {R"(\[[^\]]+\])", tk::name::label, state_action::none()},
-        {R"([a-zA-Z_][\w.-]*(?=\s*[=:]))", tk::name::attribute, state_action::none()},
-        {R"([=:])", tk::operator_::self, state_action::none()},
-        {R"(\b(true|false|yes|no|on|off)\b)", tk::keyword::constant, state_action::none()},
-        {R"([0-9]+\.[0-9]+)", tk::literal::number::float_, state_action::none()},
-        {R"([0-9]+)", tk::literal::number::integer, state_action::none()},
-        {R"("[^"]*")", tk::literal::string::double_, state_action::none()},
-        {R"('[^']*')", tk::literal::string::single, state_action::none()},
-        {R"([^\s;#\[\]=:"']+)", tk::literal::string::self, state_action::none()},
+        {.pattern = R"(\s+)", .token = tk::whitespace, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"([;#][^\n]*)", .token = tk::comment::single, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(\[[^\]]+\])", .token = tk::name::label, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"([a-zA-Z_][\w.-]*(?=\s*[=:]))",
+         .token = tk::name::attribute,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"([=:])", .token = tk::operator_::self, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(\b(true|false|yes|no|on|off)\b)",
+         .token = tk::keyword::constant,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"([0-9]+\.[0-9]+)",
+         .token = tk::literal::number::float_,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"([0-9]+)",
+         .token = tk::literal::number::integer,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"("[^"]*")",
+         .token = tk::literal::string::double_,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"('[^']*')",
+         .token = tk::literal::string::single,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"([^\s;#\[\]=:"']+)",
+         .token = tk::literal::string::self,
+         .action = state_action::none(),
+         .group_tokens = {}},
     };
     return rules;
 }

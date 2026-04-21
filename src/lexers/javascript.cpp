@@ -14,9 +14,13 @@ constexpr const char *filenames[] = {"*.js", "*.mjs", "*.cjs", "*.jsx"};
 constexpr const char *mimes[] = {"text/javascript", "application/javascript"};
 
 const lexer_info js_info = {
-    "javascript", "JavaScript", {aliases},
-    {filenames},  {mimes},      "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
-    10,
+    .name = "javascript",
+    .display_name = "JavaScript",
+    .aliases = {aliases},
+    .filenames = {filenames},
+    .mime_types = {mimes},
+    .url = "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+    .priority = 10,
 };
 
 } // namespace
@@ -43,99 +47,207 @@ state_map javascript_lexer::get_rules() const {
     state_map rules;
 
     rules["root"] = {
-        {R"(\n)", tk::whitespace, state_action::none()},
-        {R"([ \t\r]+)", tk::whitespace, state_action::none()},
+        {.pattern = R"(\n)", .token = tk::whitespace, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"([ \t\r]+)", .token = tk::whitespace, .action = state_action::none(), .group_tokens = {}},
 
         // Single-line comments
-        {R"(//[^\n]*)", tk::comment::single, state_action::none()},
+        {.pattern = R"(//[^\n]*)", .token = tk::comment::single, .action = state_action::none(), .group_tokens = {}},
 
         // Multi-line comments
-        {R"(/\*)", tk::comment::multiline, state_action::push_state("comment")},
+        {.pattern = R"(/\*)",
+         .token = tk::comment::multiline,
+         .action = state_action::push_state("comment"),
+         .group_tokens = {}},
 
         // Template literals
-        {R"(`)", tk::literal::string::backtick, state_action::push_state("template")},
+        {.pattern = R"(`)",
+         .token = tk::literal::string::backtick,
+         .action = state_action::push_state("template"),
+         .group_tokens = {}},
 
         // Strings
-        {R"(")", tk::literal::string::double_, state_action::push_state("dqs")},
-        {R"(')", tk::literal::string::single, state_action::push_state("sqs")},
+        {.pattern = R"(")",
+         .token = tk::literal::string::double_,
+         .action = state_action::push_state("dqs"),
+         .group_tokens = {}},
+        {.pattern = R"(')",
+         .token = tk::literal::string::single,
+         .action = state_action::push_state("sqs"),
+         .group_tokens = {}},
 
         // Regex literals (simplified)
-        {R"(/(?![/*])[^/\n]+/[gimsuy]*)", tk::literal::string::regex, state_action::none()},
+        {.pattern = R"(/(?![/*])[^/\n]+/[gimsuy]*)",
+         .token = tk::literal::string::regex,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Keywords
-        {R"(\b(?:async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|from|function|if|import|in|instanceof|let|new|of|return|static|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b)",
-         tk::keyword::self, state_action::none()},
+        {.pattern =
+             R"(\b(?:async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|from|function|if|import|in|instanceof|let|new|of|return|static|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b)",
+         .token = tk::keyword::self,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Boolean / null / undefined
-        {R"(\b(?:true|false|null|undefined|NaN|Infinity)\b)", tk::keyword::constant, state_action::none()},
+        {.pattern = R"(\b(?:true|false|null|undefined|NaN|Infinity)\b)",
+         .token = tk::keyword::constant,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Builtin objects
-        {R"(\b(?:Array|Boolean|Date|Error|Function|JSON|Map|Math|Number|Object|Promise|Proxy|Reflect|RegExp|Set|String|Symbol|WeakMap|WeakSet|console|document|window|globalThis)\b)",
-         tk::name::builtin, state_action::none()},
+        {.pattern =
+             R"(\b(?:Array|Boolean|Date|Error|Function|JSON|Map|Math|Number|Object|Promise|Proxy|Reflect|RegExp|Set|String|Symbol|WeakMap|WeakSet|console|document|window|globalThis)\b)",
+         .token = tk::name::builtin,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Floating point
-        {R"(\b\d+\.\d*(?:[eE][+-]?\d+)?\b)", tk::literal::number::float_, state_action::none()},
-        {R"(\b\d+[eE][+-]?\d+\b)", tk::literal::number::float_, state_action::none()},
+        {.pattern = R"(\b\d+\.\d*(?:[eE][+-]?\d+)?\b)",
+         .token = tk::literal::number::float_,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\b\d+[eE][+-]?\d+\b)",
+         .token = tk::literal::number::float_,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Hex
-        {R"(\b0[xX][0-9a-fA-F_]+n?\b)", tk::literal::number::hex, state_action::none()},
+        {.pattern = R"(\b0[xX][0-9a-fA-F_]+n?\b)",
+         .token = tk::literal::number::hex,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Oct
-        {R"(\b0[oO][0-7_]+n?\b)", tk::literal::number::oct, state_action::none()},
+        {.pattern = R"(\b0[oO][0-7_]+n?\b)",
+         .token = tk::literal::number::oct,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Bin
-        {R"(\b0[bB][01_]+n?\b)", tk::literal::number::bin, state_action::none()},
+        {.pattern = R"(\b0[bB][01_]+n?\b)",
+         .token = tk::literal::number::bin,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Integer (including BigInt)
-        {R"(\b[0-9][0-9_]*n?\b)", tk::literal::number::integer, state_action::none()},
+        {.pattern = R"(\b[0-9][0-9_]*n?\b)",
+         .token = tk::literal::number::integer,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Arrow / operators
-        {R"(=>)", tk::operator_::self, state_action::none()},
-        {R"([+\-*/%&|^~<>=!?:;]+)", tk::operator_::self, state_action::none()},
+        {.pattern = R"(=>)", .token = tk::operator_::self, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"([+\-*/%&|^~<>=!?:;]+)",
+         .token = tk::operator_::self,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Punctuation
-        {R"([\[\](){}.,])", tk::punctuation::self, state_action::none()},
+        {.pattern = R"([\[\](){}.,])",
+         .token = tk::punctuation::self,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Decorators
-        {R"(@[a-zA-Z_]\w*)", tk::name::decorator, state_action::none()},
+        {.pattern = R"(@[a-zA-Z_]\w*)",
+         .token = tk::name::decorator,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Identifiers
-        {R"([a-zA-Z_$]\w*)", tk::name::self, state_action::none()},
+        {.pattern = R"([a-zA-Z_$]\w*)", .token = tk::name::self, .action = state_action::none(), .group_tokens = {}},
     };
 
     rules["comment"] = {
-        {R"(\*/)", tk::comment::multiline, state_action::pop_state()},
-        {R"([^*]+)", tk::comment::multiline, state_action::none()},
-        {R"(\*)", tk::comment::multiline, state_action::none()},
+        {.pattern = R"(\*/)", .token = tk::comment::multiline, .action = state_action::pop_state(), .group_tokens = {}},
+        {.pattern = R"([^*]+)", .token = tk::comment::multiline, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(\*)", .token = tk::comment::multiline, .action = state_action::none(), .group_tokens = {}},
     };
 
     rules["dqs"] = {
-        {R"(\\[\\'"abfnrtv0])", tk::literal::string::escape, state_action::none()},
-        {R"(\\x[0-9a-fA-F]{2})", tk::literal::string::escape, state_action::none()},
-        {R"(\\u[0-9a-fA-F]{4})", tk::literal::string::escape, state_action::none()},
-        {R"(\\u\{[0-9a-fA-F]+\})", tk::literal::string::escape, state_action::none()},
-        {R"(")", tk::literal::string::double_, state_action::pop_state()},
-        {R"([^"\\]+)", tk::literal::string::double_, state_action::none()},
-        {R"(\\.)", tk::literal::string::double_, state_action::none()},
+        {.pattern = R"(\\[\\'"abfnrtv0])",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\\x[0-9a-fA-F]{2})",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\\u[0-9a-fA-F]{4})",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\\u\{[0-9a-fA-F]+\})",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(")",
+         .token = tk::literal::string::double_,
+         .action = state_action::pop_state(),
+         .group_tokens = {}},
+        {.pattern = R"([^"\\]+)",
+         .token = tk::literal::string::double_,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\\.)",
+         .token = tk::literal::string::double_,
+         .action = state_action::none(),
+         .group_tokens = {}},
     };
 
     rules["sqs"] = {
-        {R"(\\[\\'"abfnrtv0])", tk::literal::string::escape, state_action::none()},
-        {R"(\\x[0-9a-fA-F]{2})", tk::literal::string::escape, state_action::none()},
-        {R"(\\u[0-9a-fA-F]{4})", tk::literal::string::escape, state_action::none()},
-        {R"(\\u\{[0-9a-fA-F]+\})", tk::literal::string::escape, state_action::none()},
-        {R"(')", tk::literal::string::single, state_action::pop_state()},
-        {R"([^'\\]+)", tk::literal::string::single, state_action::none()},
-        {R"(\\.)", tk::literal::string::single, state_action::none()},
+        {.pattern = R"(\\[\\'"abfnrtv0])",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\\x[0-9a-fA-F]{2})",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\\u[0-9a-fA-F]{4})",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\\u\{[0-9a-fA-F]+\})",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(')",
+         .token = tk::literal::string::single,
+         .action = state_action::pop_state(),
+         .group_tokens = {}},
+        {.pattern = R"([^'\\]+)",
+         .token = tk::literal::string::single,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\\.)", .token = tk::literal::string::single, .action = state_action::none(), .group_tokens = {}},
     };
 
     rules["template"] = {
-        {R"(\\[\\`])", tk::literal::string::escape, state_action::none()},
-        {R"(`)", tk::literal::string::backtick, state_action::pop_state()},
-        {R"(\$\{)", tk::literal::string::interpol, state_action::none()},
-        {R"([^`\\$]+)", tk::literal::string::backtick, state_action::none()},
-        {R"(\$)", tk::literal::string::backtick, state_action::none()},
-        {R"(\\.)", tk::literal::string::backtick, state_action::none()},
+        {.pattern = R"(\\[\\`])",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(`)",
+         .token = tk::literal::string::backtick,
+         .action = state_action::pop_state(),
+         .group_tokens = {}},
+        {.pattern = R"(\$\{)",
+         .token = tk::literal::string::interpol,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"([^`\\$]+)",
+         .token = tk::literal::string::backtick,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\$)",
+         .token = tk::literal::string::backtick,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\\.)",
+         .token = tk::literal::string::backtick,
+         .action = state_action::none(),
+         .group_tokens = {}},
     };
 
     return rules;

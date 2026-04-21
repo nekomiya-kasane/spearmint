@@ -24,7 +24,13 @@ constexpr const char *filenames[] = {"*.ftl"};
 constexpr const char *mimes[] = {"text/x-fluent"};
 
 const lexer_info ftl_info = {
-    "ftl", "Fluent (FTL)", {aliases}, {filenames}, {mimes}, "https://projectfluent.org", 10,
+    .name = "ftl",
+    .display_name = "Fluent (FTL)",
+    .aliases = {aliases},
+    .filenames = {filenames},
+    .mime_types = {mimes},
+    .url = "https://projectfluent.org",
+    .priority = 10,
 };
 
 } // namespace
@@ -58,133 +64,217 @@ state_map ftl_lexer::get_rules() const {
     // ── Root state ──────────────────────────────────────────────────
     rules["root"] = {
         // Blank lines
-        {R"(\n)", tk::whitespace, state_action::none()},
-        {R"([ \t]+)", tk::whitespace, state_action::none()},
+        {.pattern = R"(\n)", .token = tk::whitespace, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"([ \t]+)", .token = tk::whitespace, .action = state_action::none(), .group_tokens = {}},
 
         // Resource comment (###)
-        {R"(###[^\n]*)", tk::comment::special, state_action::none()},
+        {.pattern = R"(###[^\n]*)", .token = tk::comment::special, .action = state_action::none(), .group_tokens = {}},
         // Group comment (##)
-        {R"(##[^\n]*)", tk::comment::special, state_action::none()},
+        {.pattern = R"(##[^\n]*)", .token = tk::comment::special, .action = state_action::none(), .group_tokens = {}},
         // Regular comment (#)
-        {R"(#[^\n]*)", tk::comment::single, state_action::none()},
+        {.pattern = R"(#[^\n]*)", .token = tk::comment::single, .action = state_action::none(), .group_tokens = {}},
 
         // Term definition: -identifier =
-        {R"(-[a-zA-Z][a-zA-Z0-9_-]*)", tk::name::function, state_action::none()},
+        {.pattern = R"(-[a-zA-Z][a-zA-Z0-9_-]*)",
+         .token = tk::name::function,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Attribute: .identifier =
-        {R"(\.[a-zA-Z][a-zA-Z0-9_-]*)", tk::name::attribute, state_action::none()},
+        {.pattern = R"(\.[a-zA-Z][a-zA-Z0-9_-]*)",
+         .token = tk::name::attribute,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Message identifier (at start of line, before =)
-        {R"([a-zA-Z][a-zA-Z0-9_-]*)", tk::name::variable, state_action::none()},
+        {.pattern = R"([a-zA-Z][a-zA-Z0-9_-]*)",
+         .token = tk::name::variable,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Assignment operator
-        {R"(=)", tk::operator_::self, state_action::none()},
+        {.pattern = R"(=)", .token = tk::operator_::self, .action = state_action::none(), .group_tokens = {}},
 
         // Placeable open
-        {R"(\{)", tk::punctuation::self, state_action::push_state("placeable")},
+        {.pattern = R"(\{)",
+         .token = tk::punctuation::self,
+         .action = state_action::push_state("placeable"),
+         .group_tokens = {}},
 
         // String content (anything else on a line)
-        {R"([^\n\{\}]+)", tk::literal::string::self, state_action::none()},
+        {.pattern = R"([^\n\{\}]+)", .token = tk::literal::string::self, .action = state_action::none()},
     };
 
     // ── Placeable state { ... } ─────────────────────────────────────
     rules["placeable"] = {
-        {R"([ \t]+)", tk::whitespace, state_action::none()},
-        {R"(\n)", tk::whitespace, state_action::none()},
+        {.pattern = R"([ \t]+)", .token = tk::whitespace, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(\n)", .token = tk::whitespace, .action = state_action::none(), .group_tokens = {}},
 
         // Close placeable
-        {R"(\})", tk::punctuation::self, state_action::pop_state()},
+        {.pattern = R"(\})", .token = tk::punctuation::self, .action = state_action::pop_state(), .group_tokens = {}},
 
         // Selector arrow
-        {R"(->)", tk::operator_::self, state_action::none()},
+        {.pattern = R"(->)", .token = tk::operator_::self, .action = state_action::none(), .group_tokens = {}},
 
         // Variable reference: $name
-        {R"(\$[a-zA-Z][a-zA-Z0-9_-]*)", tk::name::variable, state_action::none()},
+        {.pattern = R"(\$[a-zA-Z][a-zA-Z0-9_-]*)",
+         .token = tk::name::variable,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Term reference: -name
-        {R"(-[a-zA-Z][a-zA-Z0-9_-]*)", tk::name::function, state_action::none()},
+        {.pattern = R"(-[a-zA-Z][a-zA-Z0-9_-]*)",
+         .token = tk::name::function,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Function call: FUNC(
-        {R"([A-Z][A-Z0-9_-]*(?=\())", tk::name::builtin, state_action::none()},
+        {.pattern = R"([A-Z][A-Z0-9_-]*(?=\())",
+         .token = tk::name::builtin,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Variant key: [key] or *[key]
-        {R"(\*?\[)", tk::punctuation::self, state_action::push_state("variant_key")},
+        {.pattern = R"(\*?\[)",
+         .token = tk::punctuation::self,
+         .action = state_action::push_state("variant_key"),
+         .group_tokens = {}},
 
         // Nested placeable
-        {R"(\{)", tk::punctuation::self, state_action::push_state("placeable")},
+        {.pattern = R"(\{)",
+         .token = tk::punctuation::self,
+         .action = state_action::push_state("placeable"),
+         .group_tokens = {}},
 
         // Parentheses (function args)
-        {R"(\()", tk::punctuation::self, state_action::push_state("call_args")},
+        {.pattern = R"(\()",
+         .token = tk::punctuation::self,
+         .action = state_action::push_state("call_args"),
+         .group_tokens = {}},
 
         // Number literal
-        {R"(-?\d+(?:\.\d+)?)", tk::literal::number::float_, state_action::none()},
+        {.pattern = R"(-?\d+(?:\.\d+)?)",
+         .token = tk::literal::number::float_,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Named argument: name:
-        {R"([a-zA-Z][a-zA-Z0-9_-]*(?=\s*:))", tk::name::attribute, state_action::none()},
+        {.pattern = R"([a-zA-Z][a-zA-Z0-9_-]*(?=\s*:))",
+         .token = tk::name::attribute,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Colon (named arg separator)
-        {R"(:)", tk::punctuation::self, state_action::none()},
+        {.pattern = R"(:)", .token = tk::punctuation::self, .action = state_action::none(), .group_tokens = {}},
 
         // String literal in placeable
-        {R"(")", tk::literal::string::double_, state_action::push_state("string")},
+        {.pattern = R"(")",
+         .token = tk::literal::string::double_,
+         .action = state_action::push_state("string"),
+         .group_tokens = {}},
 
         // Attribute access: .attr
-        {R"(\.[a-zA-Z][a-zA-Z0-9_-]*)", tk::name::attribute, state_action::none()},
+        {.pattern = R"(\.[a-zA-Z][a-zA-Z0-9_-]*)",
+         .token = tk::name::attribute,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Comma
-        {R"(,)", tk::punctuation::self, state_action::none()},
+        {.pattern = R"(,)", .token = tk::punctuation::self, .action = state_action::none(), .group_tokens = {}},
 
         // Any other text inside placeable
-        {R"([^\s\{\}\[\]\(\)\",:>$\-.]+)", tk::literal::string::self, state_action::none()},
+        {.pattern = R"([^\s\{\}\[\]\(\)\",:>$\-.]+)",
+         .token = tk::literal::string::self,
+         .action = state_action::none(),
+         .group_tokens = {}},
     };
 
     // ── Variant key state [key] ─────────────────────────────────────
     rules["variant_key"] = {
-        {R"([ \t]+)", tk::whitespace, state_action::none()},
-        {R"(\])", tk::punctuation::self, state_action::pop_state()},
+        {.pattern = R"([ \t]+)", .token = tk::whitespace, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(\])", .token = tk::punctuation::self, .action = state_action::pop_state(), .group_tokens = {}},
         // Identifier or number inside variant key
-        {R"(-?\d+(?:\.\d+)?)", tk::literal::number::float_, state_action::none()},
-        {R"([a-zA-Z][a-zA-Z0-9_-]*)", tk::keyword::self, state_action::none()},
+        {.pattern = R"(-?\d+(?:\.\d+)?)", .token = tk::literal::number::float_, .action = state_action::none()},
+        {.pattern = R"([a-zA-Z][a-zA-Z0-9_-]*)",
+         .token = tk::keyword::self,
+         .action = state_action::none(),
+         .group_tokens = {}},
     };
 
     // ── Function call arguments ─────────────────────────────────────
     rules["call_args"] = {
-        {R"([ \t]+)", tk::whitespace, state_action::none()},
-        {R"(\n)", tk::whitespace, state_action::none()},
-        {R"(\))", tk::punctuation::self, state_action::pop_state()},
+        {.pattern = R"([ \t]+)", .token = tk::whitespace, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(\n)", .token = tk::whitespace, .action = state_action::none(), .group_tokens = {}},
+        {.pattern = R"(\))", .token = tk::punctuation::self, .action = state_action::pop_state(), .group_tokens = {}},
 
         // Variable reference
-        {R"(\$[a-zA-Z][a-zA-Z0-9_-]*)", tk::name::variable, state_action::none()},
+        {.pattern = R"(\$[a-zA-Z][a-zA-Z0-9_-]*)",
+         .token = tk::name::variable,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Term reference
-        {R"(-[a-zA-Z][a-zA-Z0-9_-]*)", tk::name::function, state_action::none()},
+        {.pattern = R"(-[a-zA-Z][a-zA-Z0-9_-]*)",
+         .token = tk::name::function,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Named argument: name:
-        {R"([a-zA-Z][a-zA-Z0-9_-]*(?=\s*:))", tk::name::attribute, state_action::none()},
-        {R"(:)", tk::punctuation::self, state_action::none()},
+        {.pattern = R"([a-zA-Z][a-zA-Z0-9_-]*(?=\s*:))",
+         .token = tk::name::attribute,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(:)", .token = tk::punctuation::self, .action = state_action::none(), .group_tokens = {}},
 
         // String literal
-        {R"(")", tk::literal::string::double_, state_action::push_state("string")},
+        {.pattern = R"(")",
+         .token = tk::literal::string::double_,
+         .action = state_action::push_state("string"),
+         .group_tokens = {}},
 
         // Number
-        {R"(-?\d+(?:\.\d+)?)", tk::literal::number::float_, state_action::none()},
+        {.pattern = R"(-?\d+(?:\.\d+)?)",
+         .token = tk::literal::number::float_,
+         .action = state_action::none(),
+         .group_tokens = {}},
 
         // Comma
-        {R"(,)", tk::punctuation::self, state_action::none()},
+        {.pattern = R"(,)", .token = tk::punctuation::self, .action = state_action::none()},
 
         // Nested placeable
-        {R"(\{)", tk::punctuation::self, state_action::push_state("placeable")},
+        {.pattern = R"(\{)",
+         .token = tk::punctuation::self,
+         .action = state_action::push_state("placeable"),
+         .group_tokens = {}},
     };
 
     // ── String literal state "..." ──────────────────────────────────
     rules["string"] = {
-        {R"(\\[\\"])", tk::literal::string::escape, state_action::none()},
-        {R"(\\u[0-9a-fA-F]{4})", tk::literal::string::escape, state_action::none()},
-        {R"(\\U[0-9a-fA-F]{6})", tk::literal::string::escape, state_action::none()},
-        {R"(")", tk::literal::string::double_, state_action::pop_state()},
+        {.pattern = R"(\\[\\"])",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\\u[0-9a-fA-F]{4})",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(\\U[0-9a-fA-F]{6})",
+         .token = tk::literal::string::escape,
+         .action = state_action::none(),
+         .group_tokens = {}},
+        {.pattern = R"(")",
+         .token = tk::literal::string::double_,
+         .action = state_action::pop_state(),
+         .group_tokens = {}},
         // Placeable inside string
-        {R"(\{)", tk::punctuation::self, state_action::push_state("placeable")},
-        {R"([^"\\{]+)", tk::literal::string::double_, state_action::none()},
+        {.pattern = R"(\{)",
+         .token = tk::punctuation::self,
+         .action = state_action::push_state("placeable"),
+         .group_tokens = {}},
+        {.pattern = R"([^"\\{]+)",
+         .token = tk::literal::string::double_,
+         .action = state_action::none(),
+         .group_tokens = {}},
     };
 
     return rules;
