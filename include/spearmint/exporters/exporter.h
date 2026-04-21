@@ -14,14 +14,14 @@
 
 namespace spearmint {
 
-class SPEARMINT_API exporter {
-  public:
-    virtual ~exporter() = default;
+    class SPEARMINT_API exporter {
+      public:
+        virtual ~exporter() = default;
 
-    /**
-     * @brief Export a token stream with the given style to a formatted string.
-     */
-    [[nodiscard]] virtual std::string format(const token_stream &tokens, const style_def_view &style) const = 0;
-};
+        /**
+         * @brief Export a token stream with the given style to a formatted string.
+         */
+        [[nodiscard]] virtual std::string format(const token_stream &tokens, const style_def_view &style) const = 0;
+    };
 
 } // namespace spearmint

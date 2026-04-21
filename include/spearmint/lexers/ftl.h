@@ -16,15 +16,15 @@
 
 namespace spearmint::lexers {
 
-class SPEARMINT_API ftl_lexer : public regex_lexer {
-  public:
-    [[nodiscard]] const lexer_info &info() const noexcept override;
-    [[nodiscard]] float analyse_text(std::string_view source) const noexcept override;
+    class SPEARMINT_API ftl_lexer : public regex_lexer {
+      public:
+        [[nodiscard]] const lexer_info &info() const noexcept override;
+        [[nodiscard]] float analyse_text(std::string_view source) const noexcept override;
 
-  protected:
-    [[nodiscard]] state_map get_rules() const override;
-};
+      protected:
+        [[nodiscard]] state_map get_rules() const override;
+    };
 
-SPEARMINT_API void register_ftl_lexer();
+    SPEARMINT_API void register_ftl_lexer();
 
 } // namespace spearmint::lexers
