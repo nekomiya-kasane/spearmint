@@ -1,6 +1,7 @@
 #include "spearmint/lexers/bash.h"
 
 #include "spearmint/core/lexer.h"
+#include "spearmint/core/lexer_registry.h"
 #include "spearmint/core/regex_lexer.h"
 #include "spearmint/core/token.h"
 

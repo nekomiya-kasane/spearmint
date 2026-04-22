@@ -122,7 +122,10 @@ namespace spearmint::lexers {
              .group_tokens = {}},
 
             // String content (anything else on a line)
-            {.pattern = R"([^\n\{\}]+)", .token = tk::literal::string::self, .action = state_action::none()},
+            {.pattern = R"([^\n\{\}]+)",
+             .token = tk::literal::string::self,
+             .action = state_action::none(),
+             .group_tokens = {}},
         };
 
         // ── Placeable state { ... } ─────────────────────────────────────
